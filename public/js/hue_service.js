@@ -1,23 +1,4 @@
-/******************************************************************************
-	
-	Hello person-who-likes-source-codez!
-	
-	HueIce is my personal Philips Hue project. If you want to take a look at 
-	some of the libraries I used to create this, head over to to 
-	http://www.hueice.com/humans.txt
-	Humans.txt also includes a list of bugs, version history as well as other
-	acknowledgements.
 
-*******************************************************************************/
-
-
-// input: color : http://jquerymobile.com/test/docs/forms/textinputs/
-
-// ! -------- Find IP address --------
-
-//$.mobile.buttonMarkup.hoverDelay = 0;
-// http://code.google.com/p/jquery-ui-for-ipad-and-iphone/
-// https://github.com/furf/jquery-ui-touch-punch
 
 var connectTimer;
 var connectIP;
@@ -47,7 +28,7 @@ function hueFindRange(ip, continueAfter, percent, nointerval){
 	
 	$.ajax('http://'+ip+'/api/'+username, {
 	    type : 'GET',
-	     timeout:500,
+	    timeout:500,
 		success: function(data){   
 
 			stopSearching = true;	           
@@ -151,38 +132,18 @@ function hueFindNext(){
 				
 	}else if(settings != undefined){
 		console.log('Hue found: '+settings.ip);
-		/*
-		hueFindComplete();
-		hueDevices(settings.ip, settings.username);
-		window.clearInterval(connectTimer);		
-		$.mobile.changePage( $("#lights"), "slide", true, true);
-		alert($('#lights'));
-		*/
-		//$.mobile.loading('hide');		
-		
 	}else{
 		console.log('Hue not found...');
-		//$.mobile.loading('hide');
 		currentIPRange = 1;
 		stopSearching = true;
-		
-		$.mobile.changePage( $("#hub-not-found"), "slide", true, true);
-		
-		
 	}
 }
 
 
-function hueFindComplete(){
-	//hueDevices(settings.ip, settings.username);
-	//$('.light-panel').show();	
+function hueFindComplete(result){
 	
-	
-	$.mobile.changePage( $("#lights"), "slide", true, true);
-	
-	// DEBUG
-	//$.mobile.changePage( $("#navigator"), "slide", true, true);				
-	//$.mobile.changePage( $("#page-color-picker"), "none", true, true);					
+	console.log('HUE FIND COMPLETE', result)
+					
 }
 
 // ! -------- Settings --------
@@ -662,47 +623,9 @@ function hueDevices(ip,username){
 				saveSettings(ip, username);	
 				console.log('Connect :: HUE Found & connected: '+ip);						
 				console.log(result);			
-				hueFindComplete();
-				window.clearInterval(connectTimer);				
-				
-			var lights = result.lights;
-	        var id = 0;
-	        $('.light:not(.all-lights)').remove();
-			$(".controls").hide();	        
-			
-	        $.each(lights, function(key, light) {
-	        	id++;
-		        console.log('Light: ');
-		        console.log(light);
-		        var light_on;
-		        if(light.state.on){
-			        light_on = 'on';
-
-					$('.lights').append('<a href="#" on="'+light.state.on+'" bri="'+light.state.bri+'" class="light '+light_on+'" rel="'+id+'"><span class="icon '+light.name+'"></span><span>'+light.name+'</span><div class="switch"><select name="flip-1" id="_switch" data-role="slider"><option value="false">Off</option><option value="true"  selected="selected">On</option></select></div></a>');		        
-			        
-		        }else{
-			        light_on = 'off';			        
-			        $('.lights').append('<a href="#" on="'+light.state.on+'" bri="'+light.state.bri+'" class="light '+light_on+'" rel="'+id+'"><span class="icon '+light.name+'"></span><span>'+light.name+'</span><div class="switch"><select name="flip-1" id="_switch" data-role="slider"><option value="false" selected="selected">Off</option><option value="true">On</option></select></div></a>');		        
-		        }
-		     	   
-		        
-					
-
-	        });				
-	        try{
-	        $(".iscroll-wrapper").iscrollview("refresh");
-	        }catch(e){}
-
-	        
+				hueFindComplete(result);
+				window.clearInterval(connectTimer);
 			}	        
-	        
-	        
-	        
-	        
-	        
-			$('.lights').trigger('create');
-			//$('.lights').listview('refresh');						        
-			
 	    }
     });
 
@@ -726,9 +649,6 @@ function hueConnect(ip){
 			if(data[0].error){
 				console.log('Connect :: Error');
 				console.log(data[0].error);
-				$.mobile.changePage( $("#search"), "slide", true, true);
-				
-				
 			}else{
 				console.log(data);				
 			}
@@ -739,39 +659,3 @@ function hueConnect(ip){
 		}  	    
     });	
 }
- 
-
-$.fn.preload = function() {
-    this.each(function(){
-        $('<img/>')[0].src = this;
-        console.log('Preloading: '+this);
-    });
-}
-
-
-/* iScroll */
-function onPullDown(event, data) {
-	console.log('Refresh lights ');
-	$(".controls").slideUp(400);		
-	setTimeout(function(){
-		hueDevices(settings.ip, settings.username);
-		data.iscrollview.refresh(); 
-	}, 800);		
-}
-
-function onPullUp() {
-	console.log('onPullUp: ');
-}
-
-
-
-$(document).delegate("#lights", "pageinit", function(event) {
-
-		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
-
-        $(".iscroll-wrapper", this).bind( { 
-        "iscroll_onpulldown" : onPullDown,    
-        "iscroll_onpullup"   : onPullUp
-        });
-        }
-});
