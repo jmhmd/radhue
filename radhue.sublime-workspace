@@ -1,0 +1,276 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "views/index.ejs",
+			"settings":
+			{
+				"buffer_size": 1218,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "public/js/controllers.js",
+			"settings":
+			{
+				"buffer_size": 360,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "public/js/hue_service.js",
+			"settings":
+			{
+				"buffer_size": 20334,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "/******************************************************************************\n	\n	Hello person-who-likes-source-codez!\n	\n	HueIce is my personal Philips Hue project. If you want to take a look at \n	some of the libraries I used to create this, head over to to \n	http://www.hueice.com/humans.txt\n	Humans.txt also includes a list of bugs, version history as well as other\n	acknowledgements.\n\n*******************************************************************************/\n\n\n// input: color : http://jquerymobile.com/test/docs/forms/textinputs/\n\n// ! -------- Find IP address --------\n\n//$.mobile.buttonMarkup.hoverDelay = 0;\n// http://code.google.com/p/jquery-ui-for-ipad-and-iphone/\n// https://github.com/furf/jquery-ui-touch-punch\n\nvar connectTimer;\nvar connectIP;\nvar connectCount = 0;\nvar timeout = 10;\nfunction connectHueNewIp(){\n	console.log('Connect :: connectHueNewIp...'+connectCount);\n	if(connectCount <= timeout){\n		console.log('Connect :: Trying to connect (Press): '+connectIP);\n\n		connectCount++;\n		hueFindRange(connectIP, false, 0, true);\n	}else{\n		console.log('Connect :: Timeout...');\n	\n		connectCount = 0;\n		\n	}\n}\nvar nointerval;\n\nfunction hueFindRange(ip, continueAfter, percent, nointerval){\n	// Connect\n	nointerval = nointerval;\n	var obj = new Object();\n	obj.username 	= username;\n	obj.devicetype 	= \"Hue Connect API Client\";	\n	console.log('hueFindRange :: '+ip);\n	\n	$.ajax('http://'+ip+'/api/'+username, {\n	    type : 'GET',\n	     timeout:500,\n		success: function(data){   \n\n			stopSearching = true;	           \n			\n			console.log('Connect :: Check Hub : Username: '+username);\n			console.log(data);\n			//console.log('Error in data: '+(data[0].hasOwnProperty(\"error\")));\n			if(data[0] != undefined){\n				if(data[0].hasOwnProperty(\"error\")){\n					console.log('ERROR from Hub :: HUE Found, press connect : '+ip);						\n					console.log(data.error);\n					connectHubPress(ip, continueAfter, percent, nointerval)\n					//connectHubPress(ip, continueAfter, percent, nointerval)\n												\n				}\n			}\n			if(\"lights\" in data == true){\n				stopSearching = true;\n				console.log('SUCCESS Key exists :: data.lights: '+username);\n				hueDevices(ip, obj.username);\n			}\n		},  \n		error: function(data){  \n			//console.log('Not found: '+ip);\n			if(stopSearching == false){\n				hueFindNext();\n			}\n			//console.log(data);		 \n		},\n		statusCode: {\n		    404: function() {\n		     // console.log(\"Not found: \"+ip);\n		    }\n		  } 	    \n    });	\n\n}\n\n\nfunction connectHubPress(ip, continueAfter, percent, nointerval){\n	\n	var obj = new Object();\n	obj.username 	= username;\n	obj.devicetype 	= \"Hue Connect API Client\";		\n	$.ajax('http://'+ip+'/api/', {\n	    data : JSON.stringify(obj),\n	    contentType : 'application/json',\n	    type : 'POST',\n	     timeout:500,\n		success: function(data){   \n			stopSearching = true;	           \n			console.log('Connect :: Loaded : Username: ');\n			console.log(data);\n			if(typeof data.error != undefined){\n	        	stopSearching = true;\n				console.log('Connect :: HUE Found, press connect : '+ip);						\n				$(\"#ip-address\").attr('placeholder', ip);\n				//console.log('Connect :: Error');\n				$.mobile.changePage( $(\"#connect-hub\"), \"slide\", true, true);\n				\n				connectIP = ip;\n				\n				if(!nointerval){\n					$('#timer-wrap').html('<div id=\"timer-wrap\"><ul><li><div id=\"timer-display\"><div id=\"countdown\">'+(timeout+1)+'</div></div></li><li><a href=\"#hub-not-found\" id=\"cancel-connct-hub\" class=\"btn-mode grey\" data-rel=\"_back\">Cancel</a></li></ul>');\n					connectTimer = window.setInterval(connectHueNewIp, 1000);\n				}\n				\n				console.log(data[0].error);\n											\n			}else{\n				hueDevices(ip, obj.username); // Check to see if key \n			}\n		},  \n		error: function(data){  \n			//console.log('Not found: '+ip);\n			if(stopSearching == false){\n			hueFindNext();\n			}\n			//console.log(data);		 \n		},\n		statusCode: {\n		    404: function() {\n		     // console.log(\"Not found: \"+ip);\n		    }\n		  } 	    \n    });	\n}\n\nvar currentIPRange = 1;\nvar stopSearching = false;\nfunction hueFindNext(){\n	// 192.168.1.187	\n	\n	if(currentIPRange < 254 && settings == undefined && stopSearching == false){\n		currentIPRange++;\n		hueFindRange('10.0.1.'+currentIPRange, stopSearching);			\n		hueFindRange('10.0.0.'+currentIPRange, stopSearching);	\n		hueFindRange('192.168.1.'+currentIPRange, stopSearching);			\n		hueFindRange('192.168.1.'+currentIPRange, stopSearching,Math.floor((currentIPRange/254)*100));\n		//$.mobile.loading('hide');\n				\n	}else if(settings != undefined){\n		console.log('Hue found: '+settings.ip);\n		/*\n		hueFindComplete();\n		hueDevices(settings.ip, settings.username);\n		window.clearInterval(connectTimer);		\n		$.mobile.changePage( $(\"#lights\"), \"slide\", true, true);\n		alert($('#lights'));\n		*/\n		//$.mobile.loading('hide');		\n		\n	}else{\n		console.log('Hue not found...');\n		//$.mobile.loading('hide');\n		currentIPRange = 1;\n		stopSearching = true;\n		\n		$.mobile.changePage( $(\"#hub-not-found\"), \"slide\", true, true);\n		\n		\n	}\n}\n\n\nfunction hueFindComplete(){\n	//hueDevices(settings.ip, settings.username);\n	//$('.light-panel').show();	\n	\n	\n	$.mobile.changePage( $(\"#lights\"), \"slide\", true, true);\n	\n	// DEBUG\n	//$.mobile.changePage( $(\"#navigator\"), \"slide\", true, true);				\n	//$.mobile.changePage( $(\"#page-color-picker\"), \"none\", true, true);					\n}\n\n// ! -------- Settings --------\n\n\n\n\n\nvar settings;\nvar username = 'HueConnect';\n\nfunction getSettings(){\n	/*\n	var ip 				= '10.0.0.9';\n	var username 		= 'HueConnect';\n	*/\n	// Retrieve the object from storage\n	var retrievedObject = localStorage.getItem('settings');\n	console.log('Settings: ', JSON.parse(retrievedObject));\n	console.log('getSettings ::'+ (retrievedObject != null));\n	if(retrievedObject != null){\n		settings = JSON.parse(retrievedObject);\n		$('#ip-address-display').html(settings.ip);\n		return true;\n	}else{\n		return false;		\n	}\n}\n\nfunction saveSettings(ip, username){\n\n	var settings = { 'ip': ip, 'username': username};\n	localStorage.setItem('settings', JSON.stringify(settings));	\n	console.log('Save Settings :: ');\n	console.log(settings);\n	getSettings();\n}\n\n\nfunction isIP(ip) {\n//    return date.match(/^(3[0-1]|[0-2]?[0-9])\\/(0?[0-9]|1[0-2])\\/([1-2][0-9]{3})$/);\n	return ip.match(/^((^|\\.)((25[0-5])|(2[0-4]\\d)|(1\\d\\d)|([1-9]?\\d))){4}$/);\n}\n\n// ! -------- Document ready --------\n\n$(function () {\n\n\n\n	console.log('Convert color: '+(rgbToHsv(10,255,10)));\n\n/*\n$(['img/radar-background.png', 'img/connect-hub-on.png','img/icon-settings.png','img/on_off.png','img/radar-background.png','img/radar.png','img/spinner_192.gif']).preload();\n*/\n\n\n	$('#cancel-connct-hub').live('click', function(){\n		console.log('Cancel connect hub');\n		connectCount = 0;\n		window.clearInterval(connectTimer);\n		\n	});\n	\n	$('#save-ip-address').live('click', function(){\n		var tmpIP = $('#ip-address').val();\n		if(isIP(tmpIP)){\n		currentIP = tmpIP;\n		hueFindRange(tmpIP, false, 1, false);\n		}else{\n			\n			console.log('Not a valid ip address:'+tmpIP);\n		}\n		//connectHueNewIp();\n		\n	});\n	\n	$('.search-hue').live('click', function(){\n		console.log('Search for Hue...');\n		settings = null;\n		connectCount = 0;\n		currentIPRange 	= 1;\n		stopSearching 	= false;	\n		hueFindNext();\n		\n	});\n	\n	$('.reset-hue').live('click', function(){\n		console.log('Reset settings...');\n		settings = null;\n		localStorage.clear();\n		connectCount 	= 0;\n		currentIPRange 	= 1;\n		stopSearching 	= false;	\n		\n		hueFindNext();\n		\n	});	\n\n\n	\n		\n	var current_light 	= 0;	\n	\n	\n	// ! ----> Get settings\n	if(getSettings()){\n		console.log('Settings: ');\n		console.log(settings);\n		hueDevices(settings.ip, settings.username);\n	\n		//$.mobile.changePage( $(\"#connect-hub\"), \"slide\", true, true);				\n		//$.mobile.changePage( $(\"#search\"), \"slide\", true, true);						\n		$.mobile.changePage( $(\"#lights\"), \"slide\", true, true);\n		//$.mobile.changePage( $(\"#hub-not-found\"), \"slide\", true, true);		\n		//$('.light-panel').show();\n	}else{\n		//connectHue(ip);\n		console.log('Get HUE IP...');\n		//$.mobile.changePage( $(\"#search\"), \"slide\", true, true);\n		$.mobile.changePage( $(\"#initial-options\"), \"slide\", true, true);		\n//		$.mobile.changePage( $(\"#connect-hub-enter-ip\"), \"slide\", true, true);		\n		// show dialog\n		//hueFind();	\n		//confirm();	\n		\n	}\n	\n\n	\n	// Colorpicker, Farbtastic\n	var d = new Date();\n	function callback(color) {\n		//console.log('callback: '+$.farbtastic('#color-picker').hsl[2]);\n		$('.color-bulb .mask').css('backgroundColor', color);\n		$('.color-display').css('backgroundColor', color);		\n\n		if((new Date)-d > 100){\n			d = new Date();\n			var hsl = $.farbtastic('#color-picker').hsl;\n			var hue 		= Math.floor(hsl[0]*65535);\n			var saturation 	= Math.floor(hsl[1]*255);\n			var brightness 	= Math.floor(hsl[2]*255);\n			console.log('hue: '+hue+' saturation: '+saturation+' brightness: '+brightness);\n			hueColor(settings.ip, settings.username, current_light, brightness, hue, saturation);			\n		}else{\n			//console.log(d-(new Date));\n		}\n				\n		//\n\n		\n\n//		console.log($.farbtastic('#color-picker').HSLToRGB(hsl));\n		//console.log(hsl[2]*255*1.25);\n		//console.log($.farbtastic('#color-picker').HSLToRGB(hsl[0]+0.4,hsl[1]+0.4,hsl[2]*1.1));\n		\n		//$('.color-bulb .brightness').css('backgroundColor', 'rgba(255,240,255,'+((hsl[2]*255))+')');		\n		$('.color-bulb .color').css('backgroundColor', color);\n		\n		if($.farbtastic('#color-picker').hsl[2] < 0.1){\n			$('.color-bulb #coloring').css('opacity', (($.farbtastic('#color-picker').hsl[2])));					\n			$('.color-bulb .brightness').css('opacity', (($.farbtastic('#color-picker').hsl[2])));		\n			$('.color-bulb .color').css('opacity', (($.farbtastic('#color-picker').hsl[2])));					\n		}else{\n			$('.color-bulb .brightness').css('opacity', (($.farbtastic('#color-picker').hsl[2]))+.6);				\n			$('.color-bulb .color').css('opacity', (($.farbtastic('#color-picker').hsl[2]))-0.5);\n			$('.color-bulb #coloring').css('opacity', (($.farbtastic('#color-picker').hsl[2]))+.4);					\n		}\n//		\n		\n		\n	}	\n	//$('#color-picker').farbtastic('#color', callback); // get hsl: http://acko.net/blog/farbtastic-jquery-color-picker-plug-in/\n	$('#color-picker').addTouch();\n	\n	$.farbtastic('#color-picker', callback).setColor('#823cb3');;\n	//$.farbtastic('#color-picker').setColor('#823cb3');\n\n	console.log('change: '+$(this).val());\n\n\n\n\n	\n	//connectHue(ip);\n\n	$('#connect').click(function(){\n		hueConnect(ip);\n    });\n\n	$('.light').live('click', function(){\n		//alert($(this).attr('rel'));\n		\n		$('.light').removeClass('active');\n		$(this).addClass('active');\n					\n		if($(this).hasClass('all-lights')){\n			//$(\".controls\").slideUp(400);			\n			$(\".controls\").hide();\n			try{\n	        $(\".iscroll-wrapper\").iscrollview(\"refresh\");			\n	        }catch(e){}\n		}else{\n			//$(\".controls\").slideDown(400);\n			$(\".controls\").show();\n			try{\n			$(\".iscroll-wrapper\").iscrollview(\"refresh\");\n			}catch(e){}\n			$('#slider').val($(this).attr('bri'));\n			\n			if($(this).hasClass('on')){\n				$('#switch').val('true').slider('refresh');\n			}else{\n				$('#switch').val('false').slider('refresh');			\n			}\n		\n			current_light = $(this).attr('rel');	\n		    $('#slider').slider('refresh');		\n\n			\n		\n		}\n		\n		/*\n		var switch_on = true;\n		if($(this).hasClass('on')){\n			$(this).removeClass('on');\n			$(this).addClass('off');			\n			switch_on = false;\n		}else{\n			$(this).removeClass('off');\n			$(this).addClass('on');			\n			switch_on = true;			\n			\n		}\n		hueSwitchLight(ip, username, $(this).attr('rel'), switch_on);\n		*/\n	});\n\n\n//	$('#switch').change(function(){\n\n\n\n	$('.switch').live('change',function(){\n\n		if($(this).parent().hasClass('all-lights')){\n			$(\".controls\").slideUp(400);			\n			var switch_on = $(this).find('select').val();\n			\n			$('.lights .light').find('select').val(switch_on).slider(\"refresh\");;\n\n			\n			if($(this).parent().hasClass('on')){\n				$('.light').removeClass('on');\n				$('.light').addClass('off');			\n				//switch_on = false;\n			}else{\n				$('.light').removeClass('off');\n				$('.light').addClass('on');			\n				//switch_on = true;			\n				\n			}		\n			\n			$('.lights .light').removeClass('active');\n			current_light = 0;\n			$(this).parent().addClass('active');\n			if(switch_on == 'true'){\n				for(var i = 0; i < $('.light').length; i++){\n					hueSwitchLight(settings.ip, settings.username, i, true);\n				}\n				\n			}else{\n				for(var i = 0; i < $('.light').length; i++){\n					hueSwitchLight(settings.ip, settings.username, i, false);\n				}\n			}\n			\n\n					\n			\n		}else{\n			sliderEnabled = false;\n			var switch_on = $(this).find('select').val();\n			\n			\n			if($(this).parent().hasClass('on')){\n				$(this).parent().removeClass('on');\n				$(this).parent().addClass('off');			\n				//switch_on = false;\n			}else{\n				$(this).parent().removeClass('off');\n				$(this).parent().addClass('on');			\n				//switch_on = true;			\n				\n			}		\n			console.log('switch click: '+switch_on+' light: '+current_light+' : '+(new Date()));		\n			\n			$('.light').removeClass('active');\n			current_light = $(this).parent().attr('rel');\n			$(this).parent().addClass('active');\n			if(switch_on == 'true'){\n				hueSwitchLight(settings.ip, settings.username, current_light, true);\n				if($('.active').hasClass('off')){\n					$('.active').removeClass('off');\n					$('.active').addClass('on');			\n	\n				}			\n				\n			}else{\n				hueSwitchLight(settings.ip, settings.username, current_light, false);\n				if($('.active').hasClass('on')){\n					$('.active').removeClass('on');\n					$('.active').addClass('off');			\n				}						\n			}\n		}\n	});\n    \n    \n    var putdata = new Object(); // {\"bri\": 254, \"on\": true} \n    putdata.on = true;\n\n	//var sliderTimer;\n	function checkSlider(){\n		console.log('CheckSlider :: Value: '+$('#slider').val());\n		var val = parseInt($('#slider').val());\n		if(val == 0){\n			hueSwitchLight(settings.ip, settings.username, current_light, false);\n			if($('.active').hasClass('on')){\n				$('.active').removeClass('on');\n				$('.active').addClass('off');			\n			}			\n		}else{		\n			if($('.active').hasClass('off')){\n				$('.active').removeClass('off');\n				$('.active').addClass('on');			\n\n			}\n\n		    hueBrightness(settings.ip, settings.username, current_light,parseInt($('#slider').val()));	    	    		\n		    \n	    }\n		$('.active').attr('bri', $('#slider').val());	    \n	}\n\n	var sliderEnabled = false;\n	\n\n	var sliderTmp = new Date();\n	$('#slider').live('change',function(){\n	    var slider_value = $(this).val();\n	    if((new Date)-sliderTmp > 100){\n			sliderTmp = new Date();\n			checkSlider();\n			\n		}\n		    \n	});	\n	\n	\n	\n	$('.slider').live('mousedown',function(){\n\n		console.log('Enable slider');\n		sliderEnabled = true;\n		if(current_light != 0){					\n		//window.clearInterval(sliderTimer);\n		//sliderTimer = window.setInterval(checkSlider, 400); // limit to 30 requests per second for the hub\n	    console.log('slider DOWN: ');		\n	    }\n	});\n	\n	$('.slider').live('touchstart',function(){\n		//window.clearInterval(sliderTimer);\n		//sliderTimer = window.setInterval(checkSlider, 400); // limit to 30 requests per second for the hub\n	    console.log('slider DOWN: ');		\n	});	\n	\n	$('.slider').live('touchend',function(){\n\n		//window.clearInterval(sliderTimer);\n		if(current_light != 0 && sliderEnabled){\n		//checkSlider();		\n		}\n		\n		//alert('touch end');		\n	});\n	\n	$('body').live('mouseup',function(){\n		// touchend i stedet for \n\n		//window.clearInterval(sliderTimer);	\n		if(current_light != 0 && sliderEnabled){\n			console.log('Touch end');\n			checkSlider();	\n			sliderEnabled = false;\n		}\n	});		\n    \n  \n});\n\n\n// ! -------- Hue Methods --------\nfunction hueSwitchLight(ip, username, light_id, on_off){	\n	    var putdata = new Object(); // {\"bri\": 254, \"on\": true} \n		putdata.on = on_off;\n		//putdata.transitiontime = 0;\n\n		$.ajax({\n	    url: 'http://'+ip+'/api/'+username+'/lights/'+light_id+'/state',\n	    data : JSON.stringify(putdata),\n	    type: 'PUT',\n	    success: function(result) {\n	        // Do something with the result\n	        console.log(result);\n	    }\n	    });\n}\n\nfunction hueBrightness(ip, username, light_id, brightness){	\n\n	    var putdata = new Object(); // {\"bri\": 254, \"on\": true} \n		putdata.bri = brightness;\n		putdata.on = true;		\n		//putdata.transitiontime = 0;		\n\n		$.ajax({\n	    url: 'http://'+ip+'/api/'+username+'/lights/'+light_id+'/state',\n	    data : JSON.stringify(putdata),\n	    type: 'PUT',\n	    success: function(result) {\n	        // Do something with the result\n	        console.log(result);\n	    }\n	    });\n}\n\n\nfunction hueColor(ip, username, light_id, brightness, hue, saturation){	\n\n	    var putdata = new Object(); // {\"bri\": 254, \"on\": true} \n		putdata.bri = brightness;\n		putdata.hue = hue;\n		putdata.sat = saturation;				\n		putdata.on = true;		\n		//putdata.transitiontime = 0;		\n\n		$.ajax({\n	    url: 'http://'+ip+'/api/'+username+'/lights/'+light_id+'/state',\n	    data : JSON.stringify(putdata),\n	    type: 'PUT',\n	    success: function(result) {\n	        // Do something with the result\n	        console.log(result);\n	    }\n	    });\n}\n\n\n\nfunction hueDevices(ip,username){	\n\n	$.ajax({\n	    url: 'http://'+ip+'/api/'+username,\n	    type: 'GET',\n	    success: function(result) {\n	        // Do something with the result\n	        console.log(result);\n	        \n	        // Check if object exists\n	        if(typeof(result[0]) != null && !result.lights){\n\n			}else{\n				saveSettings(ip, username);	\n				console.log('Connect :: HUE Found & connected: '+ip);						\n				console.log(result);			\n				hueFindComplete();\n				window.clearInterval(connectTimer);				\n				\n			var lights = result.lights;\n	        var id = 0;\n	        $('.light:not(.all-lights)').remove();\n			$(\".controls\").hide();	        \n			\n	        $.each(lights, function(key, light) {\n	        	id++;\n		        console.log('Light: ');\n		        console.log(light);\n		        var light_on;\n		        if(light.state.on){\n			        light_on = 'on';\n\n					$('.lights').append('<a href=\"#\" on=\"'+light.state.on+'\" bri=\"'+light.state.bri+'\" class=\"light '+light_on+'\" rel=\"'+id+'\"><span class=\"icon '+light.name+'\"></span><span>'+light.name+'</span><div class=\"switch\"><select name=\"flip-1\" id=\"_switch\" data-role=\"slider\"><option value=\"false\">Off</option><option value=\"true\"  selected=\"selected\">On</option></select></div></a>');		        \n			        \n		        }else{\n			        light_on = 'off';			        \n			        $('.lights').append('<a href=\"#\" on=\"'+light.state.on+'\" bri=\"'+light.state.bri+'\" class=\"light '+light_on+'\" rel=\"'+id+'\"><span class=\"icon '+light.name+'\"></span><span>'+light.name+'</span><div class=\"switch\"><select name=\"flip-1\" id=\"_switch\" data-role=\"slider\"><option value=\"false\" selected=\"selected\">Off</option><option value=\"true\">On</option></select></div></a>');		        \n		        }\n		     	   \n		        \n					\n\n	        });				\n	        try{\n	        $(\".iscroll-wrapper\").iscrollview(\"refresh\");\n	        }catch(e){}\n\n	        \n			}	        \n	        \n	        \n	        \n	        \n	        \n			$('.lights').trigger('create');\n			//$('.lights').listview('refresh');						        \n			\n	    }\n    });\n\n	\n}\n\n\nfunction hueConnect(ip){\n	// Connect\n	var obj = new Object();\n	obj.username 	= username;\n	obj.devicetype 	= \"Hue Connect API Client\";	\n\n	$.ajax('http://'+ip+'/api', {\n	    data : JSON.stringify(obj),\n	    contentType : 'application/json',\n	    type : 'POST',\n		success: function(data){              \n			console.log('Connect :: Loaded');\n\n			if(data[0].error){\n				console.log('Connect :: Error');\n				console.log(data[0].error);\n				$.mobile.changePage( $(\"#search\"), \"slide\", true, true);\n				\n				\n			}else{\n				console.log(data);				\n			}\n		},  \n		error: function(data){  \n			console.log('Error');\n			console.log(data);		 \n		}  	    \n    });	\n}\n \n\n$.fn.preload = function() {\n    this.each(function(){\n        $('<img/>')[0].src = this;\n        console.log('Preloading: '+this);\n    });\n}\n\n\n/* iScroll */\nfunction onPullDown(event, data) {\n	console.log('Refresh lights ');\n	$(\".controls\").slideUp(400);		\n	setTimeout(function(){\n		hueDevices(settings.ip, settings.username);\n		data.iscrollview.refresh(); \n	}, 800);		\n}\n\nfunction onPullUp() {\n	console.log('onPullUp: ');\n}\n\n\n\n$(document).delegate(\"#lights\", \"pageinit\", function(event) {\n\n		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {\n\n        $(\".iscroll-wrapper\", this).bind( { \n        \"iscroll_onpulldown\" : onPullDown,    \n        \"iscroll_onpullup\"   : onPullUp\n        });\n        }\n});\n",
+			"file": "public/js/lib/hue.js",
+			"file_size": 20459,
+			"file_write_time": 1380394711000000,
+			"settings":
+			{
+				"buffer_size": 20302,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 3,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "views/index.ejs",
+					"settings":
+					{
+						"buffer_size": 1218,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1202,
+								1202
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "public/js/controllers.js",
+					"settings":
+					{
+						"buffer_size": 360,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								354,
+								354
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "public/js/hue_service.js",
+					"settings":
+					{
+						"buffer_size": 20334,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2737.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "public/js/lib/hue.js",
+					"settings":
+					{
+						"buffer_size": 20302,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5345,
+								5353
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 427.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 0.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 213.0,
+	"status_bar_visible": true
+}

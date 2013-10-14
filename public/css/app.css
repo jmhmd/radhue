@@ -1,4 +1,7 @@
 /* app css stylesheet */
+html, body {
+  height: 100%
+}
 
 .menu {
   list-style: none;
@@ -7,12 +10,17 @@
   padding: 0 0 0.5em;
 }
 
-.menu:before {
-  content: "[";
+.resultContainer {
+  position: relative;
 }
-
-.menu:after {
-  content: "]";
+#resultDetails {
+  position: fixed;
+  top: 70px;
+  bottom: 0px;
+  overflow-y: auto;
+}
+#annotationResult {
+  line-height: 34px;
 }
 
 .menu > li {
@@ -27,4 +35,27 @@
 .menu > li:nth-child(1):before {
   content: "";
   padding: 0;
+}
+
+.footer > .navbar {
+  border-radius: 0;
+  border-width: 1px 0 0 0;
+  margin-bottom: 0;
+}
+
+.footer {
+  height: 30px;
+  padding-top: 20px;
+}
+
+.wrapper {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin-bottom: 70px;
+}
+
+.push {
+  height: 70px;
+  clear: both;
 }

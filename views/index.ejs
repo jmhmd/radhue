@@ -21,8 +21,34 @@
 
 </head>
 <body ng-app="myApp" ng-controller="AppCtrl">
-<div ng-model="output">
+<div class="wrapper">
+	<nav class="navbar navbar-default navbar-static-top" role="navigation">
+		<a class="navbar-brand" href="#">RadHue</a>
+		<p class="pull-right navbar-text">
+			<a href="https://github.com/jmhmd/radhue/issues" class="navbar-link" target="_blank">
+				<span class="glyphicon glyphicon-question-sign"></span> Report a bug, ask a question, suggest a feature
+			</a>
+		</p>
+	</nav>
+
+	<div class="menu">
+		<button class="btn" ng-click="findHue()">Find Hue</button>
+		<button class="btn" ng-click="lightOn()">{{'Light On'}}</button>
+		<button class="btn" ng-click="infoLight()">Get Info</button>
+	</div>
+<
+	<div class="container">
+		<div id="resultContainer">
+			<div id="annotationResult"></div>
+		</div>
+	</div>
 </div>
-<a class="btn" ng-click="findHue()">Find Hue</a>
+<div class="footer">
+	<div class="navbar navbar-default">
+		<p class="muted navbar-text">
+			Created by Jason Hostetter, M.D. and Jim Morrison, M.D. - 2013
+		</p>
+	</div>
+</div>
 </body>
 </html>

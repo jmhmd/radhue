@@ -1,63 +1,46 @@
-/******************************************************************************
-	
-	Hello person-who-likes-source-codez!
-	
-	HueIce is my personal Philips Hue project. If you want to take a look at 
-	some of the libraries I used to create this, head over to to 
-	http://www.hueice.com/humans.txt
-	Humans.txt also includes a list of bugs, version history as well as other
-	acknowledgements.
-
-*******************************************************************************/
-
-
-// input: color : http://jquerymobile.com/test/docs/forms/textinputs/
-
-// ! -------- Find IP address --------
-
-//$.mobile.buttonMarkup.hoverDelay = 0;
-// http://code.google.com/p/jquery-ui-for-ipad-and-iphone/
-// https://github.com/furf/jquery-ui-touch-punch
-
 var connectTimer;
 var connectIP;
 var connectCount = 0;
 var timeout = 10;
-function connectHueNewIp(){
-	console.log('Connect :: connectHueNewIp...'+connectCount);
-	if(connectCount <= timeout){
-		console.log('Connect :: Trying to connect (Press): '+connectIP);
 
-		/*
-		$.mobile.loading( 'show', {
-			text: 'Philips Hue Found. Press the connect button.',
-			textVisible: true,
-			theme: 'd',
-			html: '<span id="connect-icon"></span><p>Philips Hue Found. Press the connect button.</p>'+Math.floor(timeout-connectCount)
-		});
-		*/
-		//<div id="countdown">'+'Math.floor(timeout-connectCount)+'</div>');		
-		$('#timer-display').html('<div id="countdown">'+(Math.floor(timeout-connectCount))+'</div>');		
-		connectCount++;
-		hueFindRange(connectIP, false, 0, true);
-	}else{
-		window.clearInterval(connectTimer);
-		console.log('Connect :: Timeout...');
-		/*
-		$.mobile.loading( 'show', {
-			text: 'Philips Hue Found. Press the connect button.',
-			textVisible: true,
-			theme: 'd',
-			html: '<span id="connect-icon"></span><p>Too slow man!</p>'
-		});
-		*/
-		$('#timer-wrap').html('<div id="timer-display"><h1>Run faster</h1><p>Not able to connect</p><ul><li><a href="#search" class="search-hue icons search">Search again...</a></li><li><a href="#connect-hub-enter-ip" class="icons ethernet">Enter IP Address</a></li></ul></div>');				
-		connectCount = 0;
-		
-	}
-}
+function infoLight() {
+	console.log("Got Here");
+	var resultBox = $('#annotationResult');
+
+	$.get("http://192.168.1.3/api/newdeveloper", function(result, status) {
+		if(status == "success") {
+			resultBox.html(JSON.stringify(result));
+		}
+	});
+};
+
+function toggleLight() {
+
+	var putdata = new Object(); 
+		putdata.on = true;
+		putdata.bri = 150;
+		putdata.alert = "select";
+
+	$.ajax({
+	    url: 'http://192.168.1.3/api/newdeveloper/lights/1/state',
+	    data : JSON.stringify(putdata),
+	    type: 'PUT',
+	    success: function(result) {
+	        // Do something with the result
+	        console.log(result);
+	    }
+	});
+};
+
+function getHueIP(){
+	$.get("http://www.meethue.com/api/nupnp", function(result, textStatus){
+    	console.log(result[0].internalipaddress);
+    });
+};
+
+
 var nointerval;
-
+/*
 function hueFindRange(ip, continueAfter, percent, nointerval){
 	// Connect
 	nointerval = nointerval;
@@ -67,13 +50,7 @@ function hueFindRange(ip, continueAfter, percent, nointerval){
 	console.log('hueFindRange :: '+ip);
 	
 	if(!stopSearching){
-		/*
-		$.mobile.loading( 'show', {
-			text: percent+'%',
-			textVisible: true,
-			theme: 'a',
-			html: '<p>Searching...</p><div class="percent-bar"><div class="percent" style="width: '+percent+'%;">'+percent+'%</div></div>'
-		});*/
+	
 		$('.percent-bar').html('<div class="percent" style="width: '+percent+'%;">'+percent+'%</div>');
 
 	}
@@ -186,13 +163,13 @@ function hueFindNext(){
 				
 	}else if(settings != undefined){
 		console.log('Hue found: '+settings.ip);
-		/*
+		
 		hueFindComplete();
 		hueDevices(settings.ip, settings.username);
 		window.clearInterval(connectTimer);		
 		$.mobile.changePage( $("#lights"), "slide", true, true);
 		alert($('#lights'));
-		*/
+		
 		//$.mobile.loading('hide');		
 		
 	}else{
@@ -230,10 +207,10 @@ var settings;
 var username = 'HueConnect';
 
 function getSettings(){
-	/*
+	
 	var ip 				= '10.0.0.9';
 	var username 		= 'HueConnect';
-	*/
+	
 	// Retrieve the object from storage
 	var retrievedObject = localStorage.getItem('settings');
 	console.log('Settings: ', JSON.parse(retrievedObject));
@@ -268,11 +245,11 @@ $(function () {
 
 
 
-	console.log('Convert color: '+(rgbToHsv(10,255,10)));
+	//console.log('Convert color: '+(rgbToHsv(10,255,10)));
 
-/*
-$(['img/radar-background.png', 'img/connect-hub-on.png','img/icon-settings.png','img/on_off.png','img/radar-background.png','img/radar.png','img/spinner_192.gif']).preload();
-*/
+
+//$(['img/radar-background.png', 'img/connect-hub-on.png','img/icon-settings.png','img/on_off.png','img/radar-background.png','img/radar.png','img/spinner_192.gif']).preload();
+
 
 
 	$('#cancel-connct-hub').live('click', function(){
@@ -442,7 +419,7 @@ $(['img/radar-background.png', 'img/connect-hub-on.png','img/icon-settings.png',
 		
 		}
 		
-		/*
+		
 		var switch_on = true;
 		if($(this).hasClass('on')){
 			$(this).removeClass('on');
@@ -455,7 +432,7 @@ $(['img/radar-background.png', 'img/connect-hub-on.png','img/icon-settings.png',
 			
 		}
 		hueSwitchLight(ip, username, $(this).attr('rel'), switch_on);
-		*/
+		
 	});
 
 
@@ -776,15 +753,15 @@ function hueConnect(ip){
 }
  
 
-$.fn.preload = function() {
-    this.each(function(){
-        $('<img/>')[0].src = this;
-        console.log('Preloading: '+this);
-    });
-}
+//$.fn.preload = function() {
+//    this.each(function(){
+//        $('<img/>')[0].src = this;
+//        console.log('Preloading: '+this);
+//    });
+//}
 
 
-/* iScroll */
+// iScroll 
 function onPullDown(event, data) {
 	console.log('Refresh lights ');
 	$(".controls").slideUp(400);		
@@ -810,3 +787,4 @@ $(document).delegate("#lights", "pageinit", function(event) {
         });
         }
 });
+*/
