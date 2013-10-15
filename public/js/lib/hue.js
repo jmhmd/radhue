@@ -3,11 +3,21 @@ var connectIP;
 var connectCount = 0;
 var timeout = 10;
 
+var dataStruct = {
+					"on" : true,
+					"bri" : 255,
+					"hue" : 15000,
+					"sat" : 144,
+					"xy" : [0.4595,0.4105],
+					"ct" : 369,
+					"alert" : "none",
+					"effect" : "none"
+				};
+
 function infoLight() {
-	console.log("Got Here");
 	var resultBox = $('#annotationResult');
 
-	$.get("http://192.168.1.3/api/newdeveloper", function(result, status) {
+	$.get("http://" + connectIP + "/api/newdeveloper", function(result, status) {
 		if(status == "success") {
 			resultBox.html(JSON.stringify(result));
 		}
@@ -15,26 +25,43 @@ function infoLight() {
 };
 
 function toggleLight() {
+	var resultBox = $('#annotationResult');
+	var switchName = $('#Lightswitch');
 
-	var putdata = new Object(); 
-		putdata.on = true;
-		putdata.bri = 150;
-		putdata.alert = "select";
+	/*$.get("http://" + connectIP + "/api/newdeveloper/lights/1", function(result, status) {
+		if(status == "success") {
+			if(result.state.on == true) {
+				dataStruct.on = false;
+			}
+			else {
+				dataStruct.on = true;
+			}
+			resultBox.html(JSON.stringify(dataStruct.on));
+		}
+	});*/
+
+	if(dataStruct.on == true) {
+		dataStruct.on = false;
+		switchName.html("Light OFF")
+	}
+	else {
+		dataStruct.on = true;
+		switchName.html("Light ON")
+	}
 
 	$.ajax({
-	    url: 'http://192.168.1.3/api/newdeveloper/lights/1/state',
-	    data : JSON.stringify(putdata),
+	    url: 'http://' + connectIP + '/api/newdeveloper/lights/1/state',
+	    data : JSON.stringify(dataStruct),
 	    type: 'PUT',
 	    success: function(result) {
-	        // Do something with the result
-	        console.log(result);
+	        console.log(JSON.stringify(result));
 	    }
 	});
 };
 
 function getHueIP(){
 	$.get("http://www.meethue.com/api/nupnp", function(result, textStatus){
-    	console.log(result[0].internalipaddress);
+    	connectIP = result[0].internalipaddress;
     });
 };
 

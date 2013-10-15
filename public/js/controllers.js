@@ -3,12 +3,9 @@
 /* Controllers */
 
 angular.module('myApp.controllers', []).
-	controller('AppCtrl', function ($scope, $http, Hue) {
-
-		$scope.hue = Hue.hueObj
+	controller('AppCtrl', function ($scope, $http) {
 
 		$scope.findHue = function(){
-<<<<<<< HEAD
 			getHueIP();
 		};
 
@@ -16,16 +13,8 @@ angular.module('myApp.controllers', []).
 			toggleLight();
 		}
 
-		$scope.infoLight = function(){
+		$scope.getLight = function(){
 			infoLight();
-=======
-			/*$http.get('http://www.meethue.com/api/nupnp')
-				.success(function(result){
-					console.log(result)
-					$scope.output = result
-				})*/
-			Hue.connectHueNewIp()
->>>>>>> fb908bee25ab0dfbccd641f39db441b19df8ae7b
 		}
 
 	})

@@ -18,10 +18,10 @@
 	<script type="text/javascript" src="/js/controllers.js"></script>
 	<script type="text/javascript" src="/js/filters.js"></script>
 	<script type="text/javascript" src="/js/directives.js"></script>
+	<script type="text/javascript" src="/js/lib/hue.js"></script>
 
 </head>
 <body ng-app="myApp" ng-controller="AppCtrl">
-<<<<<<< HEAD
 <div class="wrapper">
 	<nav class="navbar navbar-default navbar-static-top" role="navigation">
 		<a class="navbar-brand" href="#">RadHue</a>
@@ -34,10 +34,9 @@
 
 	<div class="menu">
 		<button class="btn" ng-click="findHue()">Find Hue</button>
-		<button class="btn" ng-click="lightOn()">{{'Light On'}}</button>
-		<button class="btn" ng-click="infoLight()">Get Info</button>
+		<button class="btn" ng-click="lightOn()" id="Lightswitch">{{'Light On'}}</button>
+		<button class="btn" ng-click="getLight()">Get Info</button>
 	</div>
-<
 	<div class="container">
 		<div id="resultContainer">
 			<div id="annotationResult"></div>
@@ -50,10 +49,7 @@
 			Created by Jason Hostetter, M.D. and Jim Morrison, M.D. - 2013
 		</p>
 	</div>
-=======
 <div>
-	{{hue}}
->>>>>>> fb908bee25ab0dfbccd641f39db441b19df8ae7b
 </div>
 </body>
 </html>
