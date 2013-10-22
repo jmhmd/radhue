@@ -20,15 +20,35 @@ $( function() {
     		console.log("No Hue Bridge is identified");
     	}
     });
+                        
+            $('.demo').each( function() {
+                $(this).minicolors({
+                    control: $(this).attr('data-control') || 'hue',
+                                        
+                    change: function(hex, opacity) {
+                    var log;
+                    try {
+                        log = hex ? hex : 'transparent';
+                        if( opacity ) log += ', ' + opacity;
+                            colorChange(hex);
+                    } catch(e) {}
+                },
+                theme: 'default'
+            });
+                
+        });
+                        
 });
+
 
 function infoLight() {
 	$.get("http://" + connectIP + "/api/newdeveloper", function(result, status) {
 		if(status == "success") {
 			for(var i in result.lights) {
-				$('#lightMenu').append('<body>' + result.lights[i].name + '</body>   ' + 
-					'<button id=' + i + ' onclick="buttonClick(this.id)">  ' + result.lights[i].state.on + '</button>' +
-					'<br>');
+				$('#lightMenu').append('<li>' + result.lights[i].name + '<br>' + 
+					'<button id=' + i + ' onclick="buttonClick(this.id)">  ' + result.lights[i].state.on + '</button><br>' +
+					'<input type="range" id=' + i + 'slider min=0 max=255 step=1 onmouseup="sliderMove(this.id, this.value)"></input>' + 
+					'<input type="color" id=' + i + 'color onchange="colorChange(this.id, value)"></input></li>');
 			}
 		}
 	});
@@ -39,6 +59,36 @@ function infoLight() {
 		}
 	});
 };
+
+function colorChange(value) {
+	value = value.replace('#', '');
+		console.log(": " + parseInt(value, 16) / 256);
+	var brightness = new Object();
+	brightness.hue = Math.round(parseInt(value, 16) / 256);
+
+	$.ajax({
+	    url: 'http://' + connectIP + '/api/newdeveloper/lights/1/state',
+	    data : JSON.stringify(brightness),
+	    type: 'PUT',
+		success: function(result) {
+			console.log(JSON.stringify(result));
+	    }
+	});
+}
+
+function sliderMove(lightID, value) {
+	var brightness = new Object();
+	brightness.bri = parseInt(value);
+
+	$.ajax({
+	    url: 'http://' + connectIP + '/api/newdeveloper/lights/' + lightID[0] + '/state',
+	    data : JSON.stringify(brightness),
+	    type: 'PUT',
+		success: function(result) {
+			console.log(JSON.stringify(result));
+	    }
+	});
+}
 
 function toggleLight() {
 	var resultBox = $('#annotationResult');
