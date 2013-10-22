@@ -21,7 +21,7 @@
 	<script type="text/javascript" src="/js/controllers.js"></script>
 	<script type="text/javascript" src="/js/filters.js"></script>
 	<script type="text/javascript" src="/js/directives.js"></script>
-	<script type="text/javascript" src="/js/lib/hue.js"></script>
+	<!--<script type="text/javascript" src="/js/lib/hue.js"></script>-->
 
 </head>
 <body ng-app="myApp" ng-controller="AppCtrl">
@@ -51,7 +51,14 @@
 			</div>
 			<div class="col-md-4">
 				<div id="resultContainer">
-					<div id="annotationResult"></div>
+					<div id="annotationResult">
+						Lights:
+						<div ng-repeat="(key, light) in lights">
+							Light:
+							{{light.name}}
+							<button ng-click="toggleLight(key)">{{light.state.on}}</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
