@@ -22,8 +22,9 @@ $( function() {
 
 //Find the Hue Bridge and set the IP address to global value HueIP
 function findHue() {
+	console.log("got here!");
 	$.get("http://www.meethue.com/api/nupnp", function(result, textStatus){
-    	if(textStatus = "success") {
+    	if(textStatus == "success" & result[0] != undefined) {
     		HueIP = result[0].internalipaddress;
     		console.log("Hue Bridge Found: " + HueIP);
     	}
