@@ -1,8 +1,5 @@
 
-<<<<<<< HEAD
 // ! -------- Find IP address --------
-=======
->>>>>>> fb908bee25ab0dfbccd641f39db441b19df8ae7b
 
 var connectTimer;
 var connectIP;
