@@ -131,12 +131,10 @@ angular.module('myApp.controllers', []).
 			console.log(navigator.onLine)
 			if (navigator.onLine && !$scope.testing) { // hey, that's cool, didn't know navigator existed!
 				// moved the nupnp query logic to the Bridge service
-
+				Bridge.tryPNP()
 			} else {
 				console.log('not online, scan IPs')
-				Bridge.connectHueNewIp(function(result){
-					if (result === 'success')
-				})
+				Bridge.connectHueNewIp()
 			}
 		}
 

@@ -271,6 +271,7 @@ angular.module('myApp.bridge', [])
 
 		return {
 			connectHueNewIp: connectHueNewIp,
+			tryPNP: tryPNP,
 			IP: function(){ return connectIP }
 		}
 	})
