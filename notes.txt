@@ -1,0 +1,4 @@
+Notes:
+
+RGB to hue X,Y color converter script:
+https://github.com/Q42/hue-color-converter

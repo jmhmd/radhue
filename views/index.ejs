@@ -24,7 +24,7 @@
 	<script type="text/javascript" src="/js/hue_service.js"></script>
 
 </head>
-<body ng-app="myApp" ng-controller="AppCtrl">
+<body ng-app="myApp" ng-controller="AppCtrl" ng-init="loadLights()">
 <div class="wrapper">
 	<nav class="navbar navbar-default navbar-static-top" role="navigation">
 		<a class="navbar-brand" href="#">RadHue</a>
@@ -44,19 +44,18 @@
 	</div>
 	<div class="container">
 		<div class="row">
-			<div class="col-md-4">
+			<div class="col-md-8">
 				<div id="lightControl">
-					Lights:
-					<div ng-repeat="(key, light) in lights">
-						Light:
-						{{light.name}}
-						<button ng-click="toggleLight(key)">{{light.state.on && 'On' || 'Off'}}</button>
-					</div>
+					
 				</div>
 			</div>
 			<div class="col-md-4">
-				<div id="resultContainer">
-				</div>
+				<h4>All available lights:</h4>
+					<div ng-repeat="(key, light) in lights">
+						{{light.name}}
+						<button ng-click="blinkLight(key)">Identify</button>
+						<button ng-click="toggleLight(key)">{{light.state.on && 'On' || 'Off'}}</button>
+					</div>
 			</div>
 		</div>
 	</div>

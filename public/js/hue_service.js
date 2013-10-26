@@ -1,4 +1,3 @@
-
 // ! -------- Find IP address --------
 
 var connectTimer;
