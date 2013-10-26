@@ -99,6 +99,10 @@ angular.module('myApp.controllers', []).
 			console.log($scope.groups)
 		}
 
+		$scope.onSelectedPreset = function(position){
+			console.log($scope.groups)
+		}
+
 		$scope.toggleLight = function(lightID) {
 			console.log(lightID)
 			$scope.lights[lightID].state.on = !$scope.lights[lightID].state.on

@@ -53,8 +53,17 @@
 							<!-- repeat this block for each available light position -->
 							<div class="form-group" ng-repeat="(position, light) in group.lights">
 								<label class="col-md-2 control-label">{{position | uppercase}}:</label>
-								<div class="col-md-6">
+								<div class="col-md-4">
 									<select class="form-control" ng-model="group.lights[position]" ng-options="l.value as l.name for l in selectLights(group.lights[position])" ng-change="onSelectedLight(position)">
+										<option value="">-- None --</option>
+										<!-- <option ng-repeat="(lightID, light) in availableLights(group.lights[position])" value="{{lightID}}">{{light.name}}</option> -->
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">Preset:</label>
+								<div class="col-md-4">
+									<select class="form-control" ng-model="group.preset" ng-options="p for p in presets" ng-change="onSelectedPreset(position)">
 										<option value="">-- None --</option>
 										<!-- <option ng-repeat="(lightID, light) in availableLights(group.lights[position])" value="{{lightID}}">{{light.name}}</option> -->
 									</select>
@@ -62,6 +71,9 @@
 							</div>
 						</form>
 					</div>
+				</div>
+				<div class="add-new-group">
+					<a ng-click="addGroup()"><h3>Add Group</h3></a>
 				</div>
 			</div>
 			<div class="col-md-3">

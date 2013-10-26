@@ -7,17 +7,7 @@
 // In this case it is a simple value service.
 angular.module('myApp.services', [])
 	.factory('Groups', function(){
-		var group = {
-			// defining default values for a new group
-				name: 'New Group', // 'workstation 1' or 'TeraRecon workstation' or something descriptive like that
-				lights: {
-					backlight: null, // set these to light id numbers
-					overhead1: null,
-					overhead2: null
-				},
-				preset: false
-			},
-			groups = [group], // define groups array, and add one blank group by default
+		var groups = [], // define groups array, and add one blank group by default
 			presets = {
 				default: {
 					backlight: {
@@ -96,8 +86,17 @@ angular.module('myApp.services', [])
 
 
 		function addGroup(name, cb){
-			var newGroup = _.defaults({name: name}, group)
-			group.push(newGroup)
+			var group = {
+			// defining default values for a new group
+				name: name || 'New Group', // 'workstation 1' or 'TeraRecon workstation' or something descriptive like that
+				lights: {
+					backlight: null, // set these to light id numbers
+					overhead1: null,
+					overhead2: null
+				},
+				preset: false
+			}
+			groups.push(group)
 			if(_.isFunction(cb)){ cb(name) }
 		}
 
