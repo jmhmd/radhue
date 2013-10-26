@@ -10,15 +10,82 @@ angular.module('myApp.services', [])
 		var group = {
 			// defining default values for a new group
 				name: '', // 'workstation 1' or 'TeraRecon workstation' or something descriptive like that
-				backlight: null, // set these to light id numbers
-				overhead1: null,
-				overhead2: null,
+				lights: {
+					backlight: null, // set these to light id numbers
+					overhead1: null,
+					overhead2: null
+				},
 				preset: false
 			},
 			groups = [group], // define groups array, and add one blank group by default
 			presets = {
 				default: {
-
+					backlight: {
+						color: '', // this should change to whatever the best backlight blue hue is in the literature
+						brightness: '',
+						saturation: ''
+					},
+					overhead1: {
+						color: '',
+						brightness: '',
+						saturation: ''
+					},
+					overhead2: {
+						color: '',
+						brightness: '',
+						saturation: ''
+					}
+				},
+				studyAlert: {
+					backlight: {
+						color: '', // this one could turn a red color to indicate a stat study?
+						brightness: '',
+						saturation: ''
+					},
+					overhead1: {
+						color: '',
+						brightness: '',
+						saturation: ''
+					},
+					overhead2: {
+						color: '',
+						brightness: '',
+						saturation: ''
+					}
+				},
+				warm: {
+					backlight: {
+						color: '', // warmer general hue
+						brightness: '',
+						saturation: ''
+					},
+					overhead1: {
+						color: '',
+						brightness: '',
+						saturation: ''
+					},
+					overhead2: {
+						color: '',
+						brightness: '',
+						saturation: ''
+					}
+				},
+				cool: {
+					backlight: {
+						color: '', // cooler general hue
+						brightness: '',
+						saturation: ''
+					},
+					overhead1: {
+						color: '',
+						brightness: '',
+						saturation: ''
+					},
+					overhead2: {
+						color: '',
+						brightness: '',
+						saturation: ''
+					}
 				}
 			}
 
@@ -36,7 +103,8 @@ angular.module('myApp.services', [])
 
 		return {
 			groups: groups,
-			addGroup: addGroup
+			addGroup: addGroup,
+			presets: presets
 		}
 	})
 	.factory('Bridge', function(){

@@ -62,6 +62,20 @@ angular.module('myApp.controllers', []).
 		$scope.connectIP = ''
 		$scope.hueIP = 'Finding...'
 		$scope.groups = Groups.groups
+		$scope.presets = Object.keys(Groups.presets)
+
+		$scope.assignedLightKeys = function(){
+			// this takes each group's lights, gets the keys of each assigned light,
+			// then returns an aggregated array of all the assigned lights
+			return _.reduce(Groups.groups, function(a, group){
+					return a.concat(_.filter(group.lights, function(val){ return val }))
+				}, [])
+		}
+
+		$scope.availableLights = function(){
+			var assignedKeys = $scope.assignedLightKeys()
+			return _.filter($scope.lights, function(light, key){ return !_.contains(assignedKeys, key) })
+		}
 
 		$scope.toggleLight = function(lightID) {
 			$scope.lights[lightID].state.on = !$scope.lights[lightID].state.on
@@ -74,6 +88,12 @@ angular.module('myApp.controllers', []).
 					console.log('change sent', result)
 				}
 			});
+		}
+
+		$scope.usePreset = function(light, preset){
+			var settings = Groups.presets[preset]
+			_.assign($scope.lights[light].state, settings)
+			console.log('updated light')
 		}
 
 		$scope.loadLights = function(){
@@ -101,7 +121,7 @@ angular.module('myApp.controllers', []).
 			}
 		}
 
-		$scope.addGroup(){
+		$scope.addGroup = function(){
 			Groups.addGroup('New Group', function(name){
 				console.log('group added: ', name)
 			})

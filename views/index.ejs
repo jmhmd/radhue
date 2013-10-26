@@ -45,13 +45,18 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-8">
-				<div id="lightControl">
-					
+				<div class="light-group" ng-repeat="group in groups">
+					<div class="col-md-2">
+						{{group.name}}
+					</div>
+					<div class="col-md-6">
+						{{}}
+					</div>
 				</div>
 			</div>
 			<div class="col-md-4">
-				<h4>All available lights:</h4>
-					<div ng-repeat="(key, light) in lights">
+				<h4>Available lights:</h4>
+					<div ng-repeat="(key, light) in availableLights()">
 						{{light.name}}
 						<button ng-click="blinkLight(key)">Identify</button>
 						<button ng-click="toggleLight(key)">{{light.state.on && 'On' || 'Off'}}</button>
