@@ -5,7 +5,7 @@
 
 // Demonstrate how to register services
 // In this case it is a simple value service.
-angular.module('myApp.services', [])
+angular.module('myApp.groups', [])
 	.factory('Groups', function(){
 		var groups = [], // define groups array, and add one blank group by default
 			presets = {
@@ -105,7 +105,4 @@ angular.module('myApp.services', [])
 			addGroup: addGroup,
 			presets: presets
 		}
-	})
-	.factory('Bridge', function(){
-
 	})

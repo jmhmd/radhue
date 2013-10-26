@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('myApp.controllers', []).
-	controller('AppCtrl', ['$scope', '$http', 'Groups', function ($scope, $http, Groups) {
+	controller('AppCtrl', ['$scope', '$http', 'Groups', 'Bridge', function ($scope, $http, Groups, Bridge) {
 
 		$scope.testing = true
 
@@ -60,7 +60,7 @@ angular.module('myApp.controllers', []).
 			}
 		}
 		$scope.connectIP = ''
-		$scope.hueIP = 'Finding...'
+		$scope.hueIP = Bridge.IP
 		$scope.groups = Groups.groups
 		$scope.presets = Object.keys(Groups.presets)
 
@@ -96,11 +96,11 @@ angular.module('myApp.controllers', []).
 		}
 
 		$scope.onSelectedLight = function(position){
-			console.log($scope.groups)
+			console.log('light selected')
 		}
 
 		$scope.onSelectedPreset = function(position){
-			console.log($scope.groups)
+			console.log('preset selected')
 		}
 
 		$scope.toggleLight = function(lightID) {
@@ -108,13 +108,17 @@ angular.module('myApp.controllers', []).
 			$scope.lights[lightID].state.on = !$scope.lights[lightID].state.on
 			console.log($scope.lights[lightID].state.on)
 			$.ajax({
-				url: 'http://' + $scope.hueIP + '/api/newdeveloper/lights/' + lightID + '/state',
+				url: 'http://' + Bridge.IP() + '/api/newdeveloper/lights/' + lightID + '/state',
 				data : JSON.stringify({'on': $scope.lights[lightID].state.on}),
 				type: 'PUT',
 				success: function(result) {
 					console.log('change sent', result)
 				}
 			});
+		}
+
+		$scope.blinkLight = function(lightID){
+
 		}
 
 		$scope.usePreset = function(light, preset){
@@ -124,27 +128,15 @@ angular.module('myApp.controllers', []).
 		}
 
 		$scope.loadLights = function(){
-			if(navigator.onLine) { // hey, that's cool, didn't know it existed!
-				$.get('http://www.meethue.com/api/nupnp', function(result, textStatus){
-					if(textStatus === 'success' && result.length > 0) {
-						$scope.hueIP = result[0].internalipaddress;
-						$.get('http://' + $scope.hueIP + '/api/newdeveloper', function(result, status) {
-							if(status === 'success') {
-								$scope.$apply(function(){
-									$scope.lights = result.lights	
-								})						
-							}
-						});
-					}
-					else {
-						$scope.$apply(function() {
-							$scope.hueIP = 'No Hue Identified';
-						});
-					}
-				});	
-			}
-			else {
-				connectHueNewIp()
+			console.log(navigator.onLine)
+			if (navigator.onLine && !$scope.testing) { // hey, that's cool, didn't know navigator existed!
+				// moved the nupnp query logic to the Bridge service
+
+			} else {
+				console.log('not online, scan IPs')
+				Bridge.connectHueNewIp(function(result){
+					if (result === 'success')
+				})
 			}
 		}
 

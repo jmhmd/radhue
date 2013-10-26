@@ -39,7 +39,7 @@
 		<button class="btn" ng-click="buttonTest()">Test</button>
 		<button class="btn" ng-click="getLight()">Get Info</button>
 		<div align="center">Hue Bridge
-			<input ng-Model="hueIP" placeholder="{{hueIP}}"></input>
+			<input ng-Model="hueIP" placeholder="{{hueIP()}}"></input>
 		</div>
 	</div>
 	<div class="container">
@@ -51,13 +51,14 @@
 						<h4>{{group.name}}</h4>
 						<form class="form-horizontal" role="form">
 							<!-- repeat this block for each available light position -->
-							<div class="form-group" ng-repeat="(position, light) in group.lights">
+							<div class="form-group" ng-repeat="(position, lightID) in group.lights">
 								<label class="col-md-2 control-label">{{position | uppercase}}:</label>
 								<div class="col-md-4">
 									<select class="form-control" ng-model="group.lights[position]" ng-options="l.value as l.name for l in selectLights(group.lights[position])" ng-change="onSelectedLight(position)">
 										<option value="">-- None --</option>
-										<!-- <option ng-repeat="(lightID, light) in availableLights(group.lights[position])" value="{{lightID}}">{{light.name}}</option> -->
 									</select>
+									<button ng-show="group.lights[position]" ng-click="blinkLight(lightID)">Identify</button>
+									<button ng-show="group.lights[position]" ng-click="toggleLight(lightID)">{{lights[lightID].state.on && 'On' || 'Off'}}</button>
 								</div>
 							</div>
 							<div class="form-group">
@@ -65,7 +66,6 @@
 								<div class="col-md-4">
 									<select class="form-control" ng-model="group.preset" ng-options="p for p in presets" ng-change="onSelectedPreset(position)">
 										<option value="">-- None --</option>
-										<!-- <option ng-repeat="(lightID, light) in availableLights(group.lights[position])" value="{{lightID}}">{{light.name}}</option> -->
 									</select>
 								</div>
 							</div>
