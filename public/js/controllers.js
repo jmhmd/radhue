@@ -72,12 +72,35 @@ angular.module('myApp.controllers', []).
 				}, [])
 		}
 
-		$scope.availableLights = function(){
-			var assignedKeys = $scope.assignedLightKeys()
-			return _.filter($scope.lights, function(light, key){ return !_.contains(assignedKeys, key) })
+		$scope.availableLights = function(passlightID){
+		// passing a lightID to this function allows that light to pass the filter
+		// and remain in the returned array (used for generating option for select dropdowns)
+			var assignedKeys = $scope.assignedLightKeys(),
+				availableLights = {}
+
+			_.forEach($scope.lights, function(light, key){
+				if(!_.contains(assignedKeys, key) || key === passlightID){
+					availableLights[key] = light
+				}
+			})
+
+			return availableLights
+		}
+
+		$scope.selectLights = function(passlightID){
+		// need to use this wrapper on available lights so I can
+		// pass the lights ID as a property rather than the key,
+		// because apparently ngoptions doesn't allow using the key as
+		// the option value, at least as far as my googling can tell...
+			return _.map($scope.availableLights(passlightID), function(light, key){ return {name: light.name, value: key} })
+		}
+
+		$scope.onSelectedLight = function(position){
+			console.log($scope.groups)
 		}
 
 		$scope.toggleLight = function(lightID) {
+			console.log(lightID)
 			$scope.lights[lightID].state.on = !$scope.lights[lightID].state.on
 			console.log($scope.lights[lightID].state.on)
 			$.ajax({

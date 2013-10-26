@@ -9,7 +9,7 @@ angular.module('myApp.services', [])
 	.factory('Groups', function(){
 		var group = {
 			// defining default values for a new group
-				name: '', // 'workstation 1' or 'TeraRecon workstation' or something descriptive like that
+				name: 'New Group', // 'workstation 1' or 'TeraRecon workstation' or something descriptive like that
 				lights: {
 					backlight: null, // set these to light id numbers
 					overhead1: null,

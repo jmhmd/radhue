@@ -44,17 +44,27 @@
 	</div>
 	<div class="container">
 		<div class="row">
-			<div class="col-md-8">
-				<div class="light-group" ng-repeat="group in groups">
-					<div class="col-md-2">
-						{{group.name}}
-					</div>
-					<div class="col-md-6">
-						{{}}
+			<div class="col-md-9">
+				<!-- repeat this block for each group -->
+				<div class="light-group" ng-repeat="(groupID, group) in groups">
+					<div class="col-md-12">
+						<h4>{{group.name}}</h4>
+						<form class="form-horizontal" role="form">
+							<!-- repeat this block for each available light position -->
+							<div class="form-group" ng-repeat="(position, light) in group.lights">
+								<label class="col-md-2 control-label">{{position | uppercase}}:</label>
+								<div class="col-md-6">
+									<select class="form-control" ng-model="group.lights[position]" ng-options="l.value as l.name for l in selectLights(group.lights[position])" ng-change="onSelectedLight(position)">
+										<option value="">-- None --</option>
+										<!-- <option ng-repeat="(lightID, light) in availableLights(group.lights[position])" value="{{lightID}}">{{light.name}}</option> -->
+									</select>
+								</div>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-3">
 				<h4>Available lights:</h4>
 					<div ng-repeat="(key, light) in availableLights()">
 						{{light.name}}
