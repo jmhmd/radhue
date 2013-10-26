@@ -5,19 +5,42 @@
 angular.module('myApp.controllers', []).
 	controller('AppCtrl', function ($scope, $http) {
 
-		// $scope.findHue = function(){
-		// 	getHueIP();
-		// };
+		$scope.testing = true
 
-		// $scope.lightOn = function(){
-		// 	toggleLight();
-		// }
-
-		// $scope.getLight = function(){
-		// 	infoLight();
-		// }
-
-		$scope.lights = {}
+		$scope.lights = {
+			"1": {
+				"name": "Bedroom",
+				"state": {
+					"hue": 50000,
+					"on": true,
+					"effect": "none",
+					"alert": "none",
+					"bri": 200,
+					"sat": 200,
+					"ct": 500,
+					"xy": [0.5, 0.5],
+					"reachable": true,
+					"colormode": "hs"
+				},
+				"type": "Living Colors"
+			},
+			"2": {
+				"name": "Kitchen",
+				"state": {
+					"hue": 50000,
+					"on": true,
+					"effect": "none",
+					"alert": "none",
+					"bri": 200,
+					"sat": 200,
+					"ct": 500,
+					"xy": [0.5, 0.5],
+					"reachable": true,
+					"colormode": "hs"
+				},
+				"type": "Living Colors"
+				}
+		}
 		$scope.connectIP = ''
 
 		$scope.toggleLight = function(lightID) {
@@ -35,7 +58,7 @@ angular.module('myApp.controllers', []).
 
 		$scope.loadLights = function(){
 			$.get("http://www.meethue.com/api/nupnp", function(result, textStatus){
-			    	if(textStatus = "success") {
+			    	if(result.length > 0) {
 			    		$scope.connectIP = result[0].internalipaddress;
 			    		console.log("Hue Bridge Found: " + $scope.connectIP);
 			    	}
@@ -48,13 +71,8 @@ angular.module('myApp.controllers', []).
 							$scope.$apply(function(){
 								$scope.lights = result.lights	
 							})
-							
-							// for(var i in result.lights) {
-							// 	$('#lightMenu').append('<li>' + result.lights[i].name + '<br>' + 
-							// 		'<button id=' + i + ' onclick="buttonClick(this.id)">  ' + result.lights[i].state.on + '</button><br>' +
-							// 		'<input type="range" id=' + i + 'slider min=0 max=255 step=1 onmouseup="sliderMove(this.id, this.value)"></input>' + 
-							// 		'<input type="color" id=' + i + 'color onchange="colorChange(this.id, value)"></input></li>');
-							// }
+						} else {
+							console.log('error!')
 						}
 					});
 			    });
