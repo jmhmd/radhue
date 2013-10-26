@@ -140,14 +140,8 @@ function hueFindNext(){
 	}
 }
 
-<<<<<<< HEAD
-function hueFindComplete(){
-	//hueDevices(settings.ip, settings.username);
-	//$('.light-panel').show();	
-=======
 
 function hueFindComplete(result){
->>>>>>> fb908bee25ab0dfbccd641f39db441b19df8ae7b
 	
 	console.log('HUE FIND COMPLETE', result)
 					
