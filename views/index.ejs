@@ -3,13 +3,13 @@
 <head>
 	<title>Hue Test</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/css/bootstrap.min.css" rel="stylesheet">
 	<link href="/css/app.css" rel="stylesheet">
 	<link rel="stylesheet" href="jquery.minicolors.css">
 	<link rel="image/png" href="jquery.minicolors.png">
 
-	<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.3.1/lodash.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/lib/lodash.min.js"></script>
+	<script type="text/javascript" src="/js/lib/jquery-1.10.2.min.js"></script>
 	<script src="/js/lib/angular/angular.js"></script>
 	<script src="jquery.minicolors.js"></script>
 	<!--<script src="/js/lib/bootstrap-custom/ui-bootstrap-custom-tpls-0.5.0.js"></script>
@@ -21,7 +21,7 @@
 	<script type="text/javascript" src="/js/controllers.js"></script>
 	<script type="text/javascript" src="/js/filters.js"></script>
 	<script type="text/javascript" src="/js/directives.js"></script>
-	<!--<script type="text/javascript" src="/js/lib/hue.js"></script>-->
+	<script type="text/javascript" src="/js/hue_service.js"></script>
 
 </head>
 <body ng-app="myApp" ng-controller="AppCtrl">
@@ -36,29 +36,26 @@
 	</nav>
 
 	<div class="menu">
-		<button class="btn" ng-click="findHue()">Find Hue</button>
-		<button class="btn" ng-click="lightOn()" id="Lightswitch">{{'Light On'}}</button>
+		<button class="btn" ng-click="buttonTest()">Test</button>
 		<button class="btn" ng-click="getLight()">Get Info</button>
+		<div align="center">Hue Bridge
+			<input ng-Model="hueIP" placeholder="{{hueIP}}"></input>
+		</div>
 	</div>
 	<div class="container">
 		<div class="row">
 			<div class="col-md-4">
-				<div id="lightMenu"></div>
-				<div class="form-group">
-                	<label for="hue-demo">Hue (default)</label>
-            	    <input type="text" id="hue-demo" class="demo" data-control="brightness" value="#ff6161">
-    		    </div>
+				<div id="lightControl">
+					Lights:
+					<div ng-repeat="(key, light) in lights">
+						Light:
+						{{light.name}}
+						<button ng-click="toggleLight(key)">{{light.state.on}}</button>
+					</div>
+				</div>
 			</div>
 			<div class="col-md-4">
 				<div id="resultContainer">
-					<div id="annotationResult">
-						Lights:
-						<div ng-repeat="(key, light) in lights">
-							Light:
-							{{light.name}}
-							<button ng-click="toggleLight(key)">{{light.state.on}}</button>
-						</div>
-					</div>
 				</div>
 			</div>
 		</div>

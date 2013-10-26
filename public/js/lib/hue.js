@@ -26,7 +26,7 @@ function findHue() {
 	$.get("http://www.meethue.com/api/nupnp", function(result, textStatus){
     	if(textStatus == "success" & result[0] != undefined) {
     		HueIP = result[0].internalipaddress;
-    		console.log("Hue Bridge Found: " + HueIP);
+    		console.log("Hue Bridge Found: " + hueIP);
     	}
     	else {
     		console.log("No Hue Bridge is identified");
