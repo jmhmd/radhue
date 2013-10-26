@@ -7,6 +7,8 @@ angular.module('myApp.controllers', []).
 
 		$scope.testing = true
 
+		// mock data for testing layout stuff without bridge
+		// will be overwritten by real data if loaded from bridge
 		$scope.lights = {
 			"1": {
 				"name": "Bedroom",
@@ -42,7 +44,6 @@ angular.module('myApp.controllers', []).
 				}
 		}
 		$scope.connectIP = ''
-		$scope.lights = {}
 		$scope.hueIP = 'Finding...'
 
 		$scope.toggleLight = function(lightID) {
@@ -59,12 +60,12 @@ angular.module('myApp.controllers', []).
 		}
 
 		$scope.loadLights = function(){
-			if(navigator.onLine) {
+			if(navigator.onLine) { // hey, that's cool, didn't know it existed!
 				$.get("http://www.meethue.com/api/nupnp", function(result, textStatus){
-					if(textStatus == "success" & result[0] != undefined) {
+					if(textStatus === "success" & result.length > 0) {
     					$scope.hueIP = result[0].internalipaddress;
 				    	$.get("http://" + $scope.hueIP + "/api/newdeveloper", function(result, status) {
-							if(status == "success") {
+							if(status === "success") {
 								$scope.$apply(function(){
 									$scope.lights = result.lights	
 								})						

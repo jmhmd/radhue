@@ -50,7 +50,7 @@
 					<div ng-repeat="(key, light) in lights">
 						Light:
 						{{light.name}}
-						<button ng-click="toggleLight(key)">{{light.state.on}}</button>
+						<button ng-click="toggleLight(key)">{{light.state.on && 'On' || 'Off'}}</button>
 					</div>
 				</div>
 			</div>
