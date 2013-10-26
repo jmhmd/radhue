@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('myApp.controllers', []).
-	controller('AppCtrl', function ($scope, $http) {
+	controller('AppCtrl', function ($scope, $http, Hue) {
 
 		$scope.testing = true
 
