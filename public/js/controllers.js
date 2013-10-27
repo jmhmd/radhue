@@ -102,7 +102,7 @@ angular.module('myApp.controllers', []).
 		/-------------- Interface actions
 		*/
 
-		$scope.onSelectedLight = function(position){
+		$scope.onSelectedLight = function(lightID){
 			console.log('light selected')
 		}
 
@@ -121,6 +121,7 @@ angular.module('myApp.controllers', []).
 			}
 		}
 		
+		// send command to make the light blink
 		$scope.blinkLight = function(lightID){
 
 		}
@@ -129,42 +130,41 @@ angular.module('myApp.controllers', []).
 		//Unfortunately the value is sent as a 6 digit hex number which does not correspond to the 
 		//color values coded in the Hue
 		$scope.colorChange = function(lightID) {
-			//Eliminate the leading '#'
-			value = value.replace('#', '');
-				console.log(": " + parseInt(value, 16) / 256);
-
-			var brightness = new Object();
 			//Tried to transform the hex number into something hue friendly, but doesn't work well at all
-			brightness.hue = Math.round(parseInt(value, 16) / 256);
+			var color = { xy: $scope.lights[lightID].state.xy, bri: $scope.lights[lightID].state.bri }
+			console.log('change hue for light '+lightID+' to:', color)
 
 			//Update the light
 			$.ajax({
-			    url: 'http://' + HueIP + '/api/newdeveloper/lights/1/state',
-			    data : JSON.stringify(brightness),
-			    type: 'PUT',
-				success: function(result) {
-					console.log(JSON.stringify(result));
-			    }
-			});
+					url: 'http://' + Bridge.IP() + '/api/newdeveloper/lights/' + lightID + '/state',
+					data : JSON.stringify(color),
+					type: 'PUT'
+				})
+				.done(function(result){
+					console.log('hue updated: ', result)
+				})
+				.fail(function(requestObj, status){
+					console.log(status)
+				});
 		}
 
 		//This function is called when the brightness is changed by moving the slider
 		//Slider values are between 0 (dark) and 255 (bright)
 		$scope.sliderMove = function(lightID) {
-			var brightness = { bri: parseInt($scope.lights[lightID].state.bri) }
+			var brightness = { bri: parseInt($scope.lights[lightID].state.bri, 10) }
 
 			$.ajax({
-				    url: 'http://' + Bridge.IP() + '/api/newdeveloper/lights/' + lightID + '/state',
-				    data : JSON.stringify(brightness),
-				    type: 'PUT',
+					url: 'http://' + Bridge.IP() + '/api/newdeveloper/lights/' + lightID + '/state',
+					data : JSON.stringify(brightness),
+					type: 'PUT',
 					success: function(result) {
 						console.log(JSON.stringify(result));
-				    }
+					}
 				})
 				.done(function(result){
-					console.log('brightness updated')
+					console.log('brightness updated: ', result)
 				})
-				.fail(function(requestObj, status, error){
+				.fail(function(requestObj, status){
 					console.log(status)
 				});
 		}

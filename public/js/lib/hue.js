@@ -6,13 +6,13 @@ $( function() {
             control: $(this).attr('data-control') || 'hue',
                                 
             change: function(hex, opacity) {
-            var log;
-            try {
-                log = hex ? hex : 'transparent';
-                if( opacity ) log += ', ' + opacity;
-                    colorChange(hex);
-            	} catch(e) {}
-        	},
+            	var log;
+	            try {
+	                log = hex ? hex : 'transparent';
+	                if( opacity ) log += ', ' + opacity;
+	                    colorChange(hex);
+	            	} catch(e) {}
+	        	},
         	theme: 'default'
         });
     });
