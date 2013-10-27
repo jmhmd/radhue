@@ -25,7 +25,7 @@
 	<script type="text/javascript" src="/js/directives.js"></script>
 
 </head>
-<body ng-app="myApp" ng-controller="AppCtrl" ng-init="loadLights()">
+<body ng-app="myApp" ng-controller="AppCtrl">
 <div class="wrapper">
 	<nav class="navbar navbar-default navbar-static-top" role="navigation">
 		<a class="navbar-brand" href="#">RadHue</a>
@@ -37,8 +37,8 @@
 	</nav>
 
 	<div class="menu">
-		<button class="btn" ng-click="buttonTest()">Test</button>
-		<button class="btn" ng-click="getLight()">Get Info</button>
+		<!-- <button class="btn" ng-click="buttonTest()">Test</button> -->
+		<button class="btn" ng-click="loadLights()">Connect to Hue</button>
 		<div align="center">Hue Bridge
 			<input ng-Model="hueIP" placeholder="{{hueIP()}}"></input>
 		</div>
