@@ -128,7 +128,7 @@ angular.module('myApp.controllers', []).
 		//Change the light color according to the value returned from the colorpicker
 		//Unfortunately the value is sent as a 6 digit hex number which does not correspond to the 
 		//color values coded in the Hue
-		$scope.colorChange = function(value) {
+		$scope.colorChange = function(lightID) {
 			//Eliminate the leading '#'
 			value = value.replace('#', '');
 				console.log(": " + parseInt(value, 16) / 256);
