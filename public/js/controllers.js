@@ -5,7 +5,7 @@
 angular.module('myApp.controllers', []).
 	controller('AppCtrl', ['$scope', '$http', 'Groups', 'Bridge', function ($scope, $http, Groups, Bridge) {
 
-		$scope.testing = true
+		$scope.testing = false
 
 		// mock data for testing layout stuff without bridge
 		// will be overwritten by real data if loaded from bridge
@@ -152,6 +152,7 @@ angular.module('myApp.controllers', []).
 		//Slider values are between 0 (dark) and 255 (bright)
 		$scope.sliderMove = function(lightID) {
 			var brightness = { bri: parseInt($scope.lights[lightID].state.bri, 10) }
+			console.log('change brightness for light '+lightID+' to:', brightness)
 
 			$.ajax({
 					url: 'http://' + Bridge.IP() + '/api/newdeveloper/lights/' + lightID + '/state',

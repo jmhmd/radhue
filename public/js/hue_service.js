@@ -20,7 +20,9 @@ angular.module('myApp.bridge', [])
 						});
 					}
 					else {
-						connectIP = 'No Hue Identified';
+						$rootScope.$apply(function(){
+							connectIP = 'No Hue Identified';
+						})
 					}
 				});	
 		}
@@ -109,7 +111,9 @@ angular.module('myApp.bridge', [])
 						//console.log('Connect :: Error');
 						$.mobile.changePage( $("#connect-hub"), "slide", true, true);
 						
-						connectIP = ip;
+						$rootScope.$apply(function(){
+							connectIP = ip;
+						})
 						
 						if(!nointerval){
 							$('#timer-wrap').html('<div id="timer-wrap"><ul><li><div id="timer-display"><div id="countdown">'+(timeout+1)+'</div></div></li><li><a href="#hub-not-found" id="cancel-connct-hub" class="btn-mode grey" data-rel="_back">Cancel</a></li></ul>');
@@ -154,6 +158,9 @@ angular.module('myApp.bridge', [])
 				console.log('Hue found: '+settings.ip);
 			}else{
 				console.log('Hue not found...');
+				$rootScope.$apply(function(){
+					connectIP = 'Hue not found'
+				})
 				currentIPRange = 1;
 				stopSearching = true;
 			}

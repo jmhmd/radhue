@@ -60,9 +60,8 @@
 									</select>
 									<div ng-show="group.lights[position]">
 										<button ng-click="blinkLight(lightID)">Identify</button>
-										<button ng-click="toggleLight(lightID)">{{lights[lightID].state.on && 'On' || 'Off'}}</button>
-										<input class="form-control" type="range" min="0" max="255" step="1" ng-model="lights[lightID].state.bri" ng-mouseup="sliderMove(lightID)"></input>
-										{{lights[lightID].state}}
+										<button ng-click="toggleLight(lightID)">{{lights[lightID].state.on && 'Turn off' || 'Turn on'}}</button>
+										<input type="range" min="0" max="255" step="1" ng-model="lights[lightID].state.bri" ng-mouseup="sliderMove(lightID)"></input>
 										<input color-picker type="text" class="form-control" data-control="hue" lights="lights" data-change="colorChange(lightID)" light-ID="{{lightID}}"></input>
 									</div>
 								</div>
@@ -87,7 +86,7 @@
 					<div ng-repeat="(key, light) in availableLights()">
 						{{light.name}}
 						<button ng-click="blinkLight(key)">Identify</button>
-						<button ng-click="toggleLight(key)">{{light.state.on && 'On' || 'Off'}}</button>
+						<button ng-click="toggleLight(key)">{{light.state.on && 'Turn off' || 'Turn on'}}</button>
 					</div>
 			</div>
 		</div>
