@@ -61,8 +61,8 @@
 									<div ng-show="group.lights[position]">
 										<button ng-click="blinkLight(lightID)">Identify</button>
 										<button ng-click="toggleLight(lightID)">{{lights[lightID].state.on && 'Turn off' || 'Turn on'}}</button>
-										<input type="range" min="0" max="255" step="1" ng-model="lights[lightID].state.bri" ng-mouseup="sliderMove(lightID)"></input>
-										<input color-picker type="text" class="form-control" data-control="hue" lights="lights" data-change="colorChange(lightID)" light-ID="{{lightID}}"></input>
+										<input type="range" min="0" max="255" step="1" ng-model="lights[lightID].state.bri" ng-mouseup="sliderMove(lightID)" ng-change="nullPreset(groupID)"></input>
+										<input color-picker type="text" class="form-control" data-control="hue" lights="lights" data-change="colorChange(lightID, groupID)" light-ID="{{lightID}}" group-ID="{{groupID}}"></input>
 									</div>
 								</div>
 							</div>

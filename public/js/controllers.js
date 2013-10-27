@@ -120,6 +120,13 @@ angular.module('myApp.controllers', []).
 				})
 			}
 		}
+
+		$scope.nullPreset = function(groupID){
+			groupID = parseInt(groupID, 10)
+			$scope.safeApply(function(){
+				Groups.groups[groupID].preset = false
+			})
+		}
 		
 		// send command to make the light blink
 		$scope.blinkLight = function(lightID){
@@ -129,7 +136,10 @@ angular.module('myApp.controllers', []).
 		//Change the light color according to the value returned from the colorpicker
 		//Unfortunately the value is sent as a 6 digit hex number which does not correspond to the 
 		//color values coded in the Hue
-		$scope.colorChange = function(lightID) {
+		$scope.colorChange = function(lightID, groupID) {
+			if (groupID){
+				$scope.nullPreset(groupID)
+			}
 			//Tried to transform the hex number into something hue friendly, but doesn't work well at all
 			var color = { xy: $scope.lights[lightID].state.xy, bri: $scope.lights[lightID].state.bri }
 			console.log('change hue for light '+lightID+' to:', color)
@@ -229,5 +239,16 @@ angular.module('myApp.controllers', []).
 				}
 			}
 		}
+
+		$scope.safeApply = function(fn) {
+			var phase = this.$root.$$phase;
+			if (phase == '$apply' || phase == '$digest') {
+				if (fn && (typeof(fn) === 'function')) {
+					fn();
+				}
+			} else {
+				this.$apply(fn);
+			}
+		};
 
 	}])

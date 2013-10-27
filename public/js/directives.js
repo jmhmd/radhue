@@ -8,7 +8,8 @@ angular.module('myApp.directives', []).
 			scope: {
 				lights: '=',
 				change: '&',
-				lightId: '@'
+				lightId: '@',
+				groupId: '@'
 				// dataControl: '@'
 			},
 			link: function(scope, elm, attrs) {
@@ -44,7 +45,7 @@ angular.module('myApp.directives', []).
 							var xyBri = hexToHue(hex)
 							scope.lights[scope.lightId].state.xy = [xyBri.x, xyBri.y]
 							scope.lights[scope.lightId].state.bri = xyBri.bri * 255
-							scope.change({lightID: scope.lightId})
+							scope.change({lightID: scope.lightId, groupID: scope.groupId})
 						},
 					});
 					elm.addClass('minicolors-input')
