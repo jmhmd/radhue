@@ -59,6 +59,7 @@
 									</select>
 									<button ng-show="group.lights[position]" ng-click="blinkLight(lightID)">Identify</button>
 									<button ng-show="group.lights[position]" ng-click="toggleLight(lightID)">{{lights[lightID].state.on && 'On' || 'Off'}}</button>
+									<input ng-show="group.lights[position]" type="range" min="0" max="255" step="1" ng-model="lights[lightID].state.bri" ng-mouseup="sliderMove(lightID)"></input>
 								</div>
 							</div>
 							<div class="form-group">
@@ -73,7 +74,7 @@
 					</div>
 				</div>
 				<div class="add-new-group">
-					<a ng-click="addGroup()"><h3>Add Group</h3></a>
+					<a ng-click="addGroup()"><h3>Add Workstation</h3></a>
 				</div>
 			</div>
 			<div class="col-md-3">

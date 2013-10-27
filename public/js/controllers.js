@@ -64,6 +64,9 @@ angular.module('myApp.controllers', []).
 		$scope.groups = Groups.groups
 		$scope.presets = Object.keys(Groups.presets)
 
+		/*
+		/-------- Utility functions
+		*/
 		$scope.assignedLightKeys = function(){
 			// this takes each group's lights, gets the keys of each assigned light,
 			// then returns an aggregated array of all the assigned lights
@@ -95,6 +98,10 @@ angular.module('myApp.controllers', []).
 			return _.map($scope.availableLights(passlightID), function(light, key){ return {name: light.name, value: key} })
 		}
 
+		/*
+		/-------------- Interface actions
+		*/
+
 		$scope.onSelectedLight = function(position){
 			console.log('light selected')
 		}
@@ -118,8 +125,52 @@ angular.module('myApp.controllers', []).
 
 		}
 
+		//Change the light color according to the value returned from the colorpicker
+		//Unfortunately the value is sent as a 6 digit hex number which does not correspond to the 
+		//color values coded in the Hue
+		$scope.colorChange = function(value) {
+			//Eliminate the leading '#'
+			value = value.replace('#', '');
+				console.log(": " + parseInt(value, 16) / 256);
+
+			var brightness = new Object();
+			//Tried to transform the hex number into something hue friendly, but doesn't work well at all
+			brightness.hue = Math.round(parseInt(value, 16) / 256);
+
+			//Update the light
+			$.ajax({
+			    url: 'http://' + HueIP + '/api/newdeveloper/lights/1/state',
+			    data : JSON.stringify(brightness),
+			    type: 'PUT',
+				success: function(result) {
+					console.log(JSON.stringify(result));
+			    }
+			});
+		}
+
+		//This function is called when the brightness is changed by moving the slider
+		//Slider values are between 0 (dark) and 255 (bright)
+		$scope.sliderMove = function(lightID) {
+			var brightness = { bri: parseInt($scope.lights[lightID].state.bri) }
+
+			$.ajax({
+				    url: 'http://' + Bridge.IP() + '/api/newdeveloper/lights/' + lightID + '/state',
+				    data : JSON.stringify(brightness),
+				    type: 'PUT',
+					success: function(result) {
+						console.log(JSON.stringify(result));
+				    }
+				})
+				.done(function(result){
+					console.log('brightness updated')
+				})
+				.fail(function(requestObj, status, error){
+					console.log(status)
+				});
+		}
+
 		$scope.addGroup = function(){
-			Groups.addGroup('New Group', function(name){
+			Groups.addGroup(function(name){
 				console.log('group added: ', name)
 			})
 		}

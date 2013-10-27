@@ -11,70 +11,70 @@ angular.module('myApp.groups', [])
 			presets = {
 				default: {
 					backlight: {
-						color: '', // this should change to whatever the best backlight blue hue is in the literature
-						brightness: '',
-						saturation: ''
+						hue: '', // this should change to whatever the best backlight blue hue is in the literature
+						bri: '',
+						sat: ''
 					},
 					overhead1: {
-						color: '',
-						brightness: '',
-						saturation: ''
+						hue: '',
+						bri: '',
+						sat: ''
 					},
 					overhead2: {
-						color: '',
-						brightness: '',
-						saturation: ''
+						hue: '',
+						bri: '',
+						sat: ''
 					}
 				},
 				studyAlert: {
 					backlight: {
-						color: '', // this one could turn a red color to indicate a stat study?
-						brightness: '',
-						saturation: ''
+						hue: '', // this one could turn a red hue to indicate a stat study?
+						bri: '',
+						sat: ''
 					},
 					overhead1: {
-						color: '',
-						brightness: '',
-						saturation: ''
+						hue: '',
+						bri: '',
+						sat: ''
 					},
 					overhead2: {
-						color: '',
-						brightness: '',
-						saturation: ''
+						hue: '',
+						bri: '',
+						sat: ''
 					}
 				},
 				warm: {
 					backlight: {
-						color: '', // warmer general hue
-						brightness: '',
-						saturation: ''
+						hue: '', // warmer general hue
+						bri: '',
+						sat: ''
 					},
 					overhead1: {
-						color: '',
-						brightness: '',
-						saturation: ''
+						hue: '',
+						bri: '',
+						sat: ''
 					},
 					overhead2: {
-						color: '',
-						brightness: '',
-						saturation: ''
+						hue: '',
+						bri: '',
+						sat: ''
 					}
 				},
 				cool: {
 					backlight: {
-						color: '', // cooler general hue
-						brightness: '',
-						saturation: ''
+						hue: '', // cooler general hue
+						bri: '',
+						sat: ''
 					},
 					overhead1: {
-						color: '',
-						brightness: '',
-						saturation: ''
+						hue: '',
+						bri: '',
+						sat: ''
 					},
 					overhead2: {
-						color: '',
-						brightness: '',
-						saturation: ''
+						hue: '',
+						bri: '',
+						sat: ''
 					}
 				}
 			}
@@ -86,9 +86,13 @@ angular.module('myApp.groups', [])
 
 
 		function addGroup(name, cb){
+			if (_.isFunction(name)){
+				cb = name
+				name = false
+			}
 			var group = {
 			// defining default values for a new group
-				name: name || 'New Group', // 'workstation 1' or 'TeraRecon workstation' or something descriptive like that
+				name: name || 'New Workstation ' + (groups.length + 1), // 'workstation 1' or 'TeraRecon workstation' or something descriptive like that
 				lights: {
 					backlight: null, // set these to light id numbers
 					overhead1: null,
@@ -97,7 +101,7 @@ angular.module('myApp.groups', [])
 				preset: false
 			}
 			groups.push(group)
-			if(_.isFunction(cb)){ cb(name) }
+			if(_.isFunction(cb)){ cb(group.name) }
 		}
 
 		return {
