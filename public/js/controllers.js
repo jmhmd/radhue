@@ -100,57 +100,22 @@ angular.module('myApp.controllers', []).
 		}
 
 		$scope.onSelectedPreset = function(groupID){
-			console.log('preset selected')
 			// assign selected preset properties to respective group lights
 			var preset = Groups.groups[groupID].preset,
 				groupLights = Groups.groups[groupID].lights
 
-			_.forEach(groupLights, function(lightID, role){
-				$scope.setPreset(lightID, role, preset)
-			})
+			console.log('preset selected: ', preset)
+			if (preset){
+				_.forEach(groupLights, function(lightID, role){
+					if (lightID){
+						$scope.setPreset(lightID, role, preset)
+					}
+				})
+			}
 		}
 		
-		$scope.setPreset = function(lightID, role, preset){
-			var settings = Groups.presets[preset][role]
-			_.assign($scope.lights[lightID].state, settings)
-			// send changes to light
-			$.ajax({
-				url: 'http://' + Bridge.IP() + '/api/newdeveloper/lights/' + lightID + '/state',
-				data : JSON.stringify($scope.lights[lightID].state),
-				type: 'PUT',
-				success: function(result) {
-					console.log('set preset for light '+lightID+': ', result)
-				}
-			});
-		}
-
-		$scope.toggleLight = function(lightID) {
-			console.log(lightID)
-			$scope.lights[lightID].state.on = !$scope.lights[lightID].state.on
-			console.log($scope.lights[lightID].state.on)
-			$.ajax({
-				url: 'http://' + Bridge.IP() + '/api/newdeveloper/lights/' + lightID + '/state',
-				data : JSON.stringify({'on': $scope.lights[lightID].state.on}),
-				type: 'PUT',
-				success: function(result) {
-					console.log('change sent', result)
-				}
-			});
-		}
-
 		$scope.blinkLight = function(lightID){
 
-		}
-
-		$scope.loadLights = function(){
-			console.log(navigator.onLine)
-			if (navigator.onLine && !$scope.testing) { // hey, that's cool, didn't know navigator existed!
-				// moved the nupnp query logic to the Bridge service
-				Bridge.tryPNP()
-			} else {
-				console.log('not online, scan IPs')
-				Bridge.connectHueNewIp()
-			}
 		}
 
 		$scope.addGroup = function(){
@@ -158,4 +123,59 @@ angular.module('myApp.controllers', []).
 				console.log('group added: ', name)
 			})
 		}
+
+		/*
+		/------ Functions to send changes to lights
+		*/
+		$scope.setPreset = function(lightID, role, preset){
+			var settings = Groups.presets[preset][role]
+			_.assign($scope.lights[lightID].state, settings)
+			// send changes to light
+			$.ajax({
+					url: 'http://' + Bridge.IP() + '/api/newdeveloper/lights/' + lightID + '/state',
+					data : JSON.stringify($scope.lights[lightID].state),
+					type: 'PUT'
+				})
+				.done(function(result){
+					console.log('set preset for light '+lightID+': ', result)
+				})
+				.fail(function(requestObj, status, error){
+					console.log(status, error)
+				});
+		}
+
+		$scope.toggleLight = function(lightID) {
+			console.log(lightID)
+			$scope.lights[lightID].state.on = !$scope.lights[lightID].state.on
+			console.log($scope.lights[lightID].state.on)
+			$.ajax({
+					url: 'http://' + Bridge.IP() + '/api/newdeveloper/lights/' + lightID + '/state',
+					data : JSON.stringify({'on': $scope.lights[lightID].state.on}),
+					type: 'PUT'
+				})
+				.done(function(result){
+					console.log('change sent', result)
+				})
+				.fail(function(requestObj, status, error){
+					console.log(status, error)
+				});
+		}
+
+		/*
+		/------------- Find bridge, and load initial states of all lights
+		*/
+
+		$scope.loadLights = function(){
+			console.log(navigator.onLine)
+			if (!$scope.testing){
+				if (navigator.onLine) { // hey, that's cool, didn't know navigator existed!
+					// moved the nupnp query logic to the Bridge service
+					Bridge.tryPNP()
+				} else {
+					console.log('not online, scan IPs')
+					Bridge.connectHueNewIp()
+				}
+			}
+		}
+
 	}])
