@@ -99,8 +99,29 @@ angular.module('myApp.controllers', []).
 			console.log('light selected')
 		}
 
-		$scope.onSelectedPreset = function(position){
+		$scope.onSelectedPreset = function(groupID){
 			console.log('preset selected')
+			// assign selected preset properties to respective group lights
+			var preset = Groups.groups[groupID].preset,
+				groupLights = Groups.groups[groupID].lights
+
+			_.forEach(groupLights, function(lightID, role){
+				$scope.setPreset(lightID, role, preset)
+			})
+		}
+		
+		$scope.setPreset = function(lightID, role, preset){
+			var settings = Groups.presets[preset][role]
+			_.assign($scope.lights[lightID].state, settings)
+			// send changes to light
+			$.ajax({
+				url: 'http://' + Bridge.IP() + '/api/newdeveloper/lights/' + lightID + '/state',
+				data : JSON.stringify($scope.lights[lightID].state),
+				type: 'PUT',
+				success: function(result) {
+					console.log('set preset for light '+lightID+': ', result)
+				}
+			});
 		}
 
 		$scope.toggleLight = function(lightID) {
@@ -119,12 +140,6 @@ angular.module('myApp.controllers', []).
 
 		$scope.blinkLight = function(lightID){
 
-		}
-
-		$scope.usePreset = function(light, preset){
-			var settings = Groups.presets[preset]
-			_.assign($scope.lights[light].state, settings)
-			console.log('updated light')
 		}
 
 		$scope.loadLights = function(){

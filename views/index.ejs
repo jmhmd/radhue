@@ -54,7 +54,7 @@
 							<div class="form-group" ng-repeat="(position, lightID) in group.lights">
 								<label class="col-md-2 control-label">{{position | uppercase}}:</label>
 								<div class="col-md-4">
-									<select class="form-control" ng-model="group.lights[position]" ng-options="l.value as l.name for l in selectLights(group.lights[position])" ng-change="onSelectedLight(position)">
+									<select class="form-control" ng-model="group.lights[position]" ng-options="l.value as l.name for l in selectLights(group.lights[position])" ng-change="onSelectedLight(lightID)">
 										<option value="">-- None --</option>
 									</select>
 									<button ng-show="group.lights[position]" ng-click="blinkLight(lightID)">Identify</button>
@@ -64,7 +64,7 @@
 							<div class="form-group">
 								<label class="col-md-2 control-label">Preset:</label>
 								<div class="col-md-4">
-									<select class="form-control" ng-model="group.preset" ng-options="p for p in presets" ng-change="onSelectedPreset(position)">
+									<select class="form-control" ng-model="group.preset" ng-options="p for p in presets" ng-change="onSelectedPreset(groupID)">
 										<option value="">-- None --</option>
 									</select>
 								</div>
