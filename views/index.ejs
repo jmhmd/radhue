@@ -3,8 +3,8 @@
 <head>
 	<title>Hue Test</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/css/app.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/app.css">
 	<link rel="stylesheet" href="jquery.minicolors.css">
 	<link rel="image/png" href="jquery.minicolors.png">
 
@@ -12,16 +12,17 @@
 	<script type="text/javascript" src="/js/lib/jquery-1.10.2.min.js"></script>
 	<script src="/js/lib/angular/angular.js"></script>
 	<script src="jquery.minicolors.js"></script>
+	<script src="/js/lib/hue-color-converter.js"></script>
 	<!--<script src="/js/lib/bootstrap-custom/ui-bootstrap-custom-tpls-0.5.0.js"></script>
 
 	<script src="//cdnjs.cloudflare.com/ajax/libs/spin.js/1.2.7/spin.min.js"></script>-->
 	
 	<script type="text/javascript" src="/js/app.js"></script>
-	<script type="text/javascript" src="/js/services.js"></script>
+	<script type="text/javascript" src="/js/groups_service.js"></script>
+	<script type="text/javascript" src="/js/hue_service.js"></script>
 	<script type="text/javascript" src="/js/controllers.js"></script>
 	<script type="text/javascript" src="/js/filters.js"></script>
 	<script type="text/javascript" src="/js/directives.js"></script>
-	<script type="text/javascript" src="/js/hue_service.js"></script>
 
 </head>
 <body ng-app="myApp" ng-controller="AppCtrl">
@@ -36,27 +37,57 @@
 	</nav>
 
 	<div class="menu">
-		<button class="btn" ng-click="buttonTest()">Test</button>
-		<button class="btn" ng-click="getLight()">Get Info</button>
+		<!-- <button class="btn" ng-click="buttonTest()">Test</button> -->
+		<button class="btn" ng-click="loadLights()">Connect to Hue</button>
 		<div align="center">Hue Bridge
-			<input ng-Model="hueIP" placeholder="{{hueIP}}"></input>
+			<input ng-Model="hueIP" placeholder="{{hueIP()}}"></input>
 		</div>
 	</div>
 	<div class="container">
 		<div class="row">
-			<div class="col-md-4">
-				<div id="lightControl">
-					Lights:
-					<div ng-repeat="(key, light) in lights">
-						Light:
-						{{light.name}}
-						<button ng-click="toggleLight(key)">{{light.state.on}}</button>
+			<div class="col-md-9">
+				<!-- repeat this block for each group -->
+				<div class="light-group" ng-repeat="(groupID, group) in groups">
+					<div class="col-md-12">
+						<h4>{{group.name}}</h4>
+						<form class="form-horizontal" role="form">
+							<!-- repeat this block for each available light position -->
+							<div class="form-group" ng-repeat="(position, lightID) in group.lights">
+								<label class="col-md-2 control-label">{{position | uppercase}}:</label>
+								<div class="col-md-4">
+									<select class="form-control" ng-model="group.lights[position]" ng-options="l.value as l.name for l in selectLights(group.lights[position])" ng-change="onSelectedLight(lightID)">
+										<option value="">-- None --</option>
+									</select>
+									<div ng-show="group.lights[position]">
+										<button ng-click="blinkLight(lightID)">Identify</button>
+										<button ng-click="toggleLight(lightID)">{{lights[lightID].state.on && 'Turn off' || 'Turn on'}}</button>
+										<input type="range" min="0" max="255" step="1" ng-model="lights[lightID].state.bri" ng-mouseup="sliderMove(lightID)" ng-change="nullPreset(groupID)"></input>
+										<input color-picker type="text" class="form-control" data-control="brightness" lights="lights" data-change="colorChange(lightID, groupID)" light-ID="{{lightID}}" group-ID="{{groupID}}"></input>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">Preset:</label>
+								<div class="col-md-4">
+									<select class="form-control" ng-model="group.preset" ng-options="p for p in presets" ng-change="onSelectedPreset(groupID)">
+										<option value="">-- None --</option>
+									</select>
+								</div>
+							</div>
+						</form>
 					</div>
 				</div>
-			</div>
-			<div class="col-md-4">
-				<div id="resultContainer">
+				<div class="add-new-group">
+					<a ng-click="addGroup()"><h3>Add Workstation</h3></a>
 				</div>
+			</div>
+			<div class="col-md-3">
+				<h4>Available lights:</h4>
+					<div ng-repeat="(key, light) in availableLights()">
+						{{light.name}}
+						<button ng-click="blinkLight(key)">Identify</button>
+						<button ng-click="toggleLight(key)">{{light.state.on && 'Turn off' || 'Turn on'}}</button>
+					</div>
 			</div>
 		</div>
 	</div>

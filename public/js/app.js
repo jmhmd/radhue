@@ -5,7 +5,8 @@
 angular.module('myApp', [
   'myApp.controllers',
   'myApp.filters',
-  'myApp.services',
+  'myApp.groups',
+  'myApp.bridge',
   'myApp.directives'
 ]).
 config(function ($routeProvider, $locationProvider) {
