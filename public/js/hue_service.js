@@ -15,7 +15,10 @@ angular.module('myApp.bridge', [])
 							if(status === 'success') {
 								$rootScope.$apply(function(){
 									$scope.lights = result.lights	
+<<<<<<< HEAD
 									//causing error
+=======
+>>>>>>> 459bf74d77845ba6b6930417ce6b398a2c280466
 								})						
 							}
 						});

@@ -141,8 +141,13 @@ angular.module('myApp.controllers', []).
 				$scope.nullPreset(groupID)
 			}
 			//Tried to transform the hex number into something hue friendly, but doesn't work well at all
+<<<<<<< HEAD
 			var color = { xy: $scope.lights[lightID].state.xy, bri: parseInt($scope.lights[lightID].state.bri) }
 			//console.log('change hue for light '+lightID+' to:', JSON.stringify(color))
+=======
+			var color = { xy: $scope.lights[lightID].state.xy, bri: $scope.lights[lightID].state.bri }
+			console.log('change hue for light '+lightID+' to:', color)
+>>>>>>> 459bf74d77845ba6b6930417ce6b398a2c280466
 
 			//Update the light
 			$.ajax({
@@ -151,7 +156,11 @@ angular.module('myApp.controllers', []).
 					type: 'PUT'
 				})
 				.done(function(result){
+<<<<<<< HEAD
 					console.log('hue updated: ', JSON.stringify(result));
+=======
+					console.log('hue updated: ', result)
+>>>>>>> 459bf74d77845ba6b6930417ce6b398a2c280466
 				})
 				.fail(function(requestObj, status){
 					console.log(status)
@@ -250,4 +259,8 @@ angular.module('myApp.controllers', []).
 				this.$apply(fn);
 			}
 		};
+<<<<<<< HEAD
+=======
+
+>>>>>>> 459bf74d77845ba6b6930417ce6b398a2c280466
 	}])
