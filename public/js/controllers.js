@@ -130,6 +130,23 @@ angular.module('myApp.controllers', []).
 		
 		// send command to make the light blink
 		$scope.blinkLight = function(lightID){
+			var blink = { alert: "select" }
+			//console.log('change hue for light '+lightID+' to:', JSON.stringify(color))
+
+
+			//Update the light
+			$.ajax({
+					url: 'http://' + Bridge.IP() + '/api/newdeveloper/lights/' + lightID + '/state',
+					data : JSON.stringify(blink),
+					type: 'PUT'
+				})
+				.done(function(result){
+					console.log('hue updated: ', JSON.stringify(result));
+
+				})
+				.fail(function(requestObj, status){
+					console.log(status)
+				});
 
 		}
 
