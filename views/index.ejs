@@ -39,9 +39,7 @@
 	<div class="menu">
 		<!-- <button class="btn" ng-click="buttonTest()">Test</button> -->
 		<button class="btn" ng-click="loadLights()">Connect to Hue</button>
-		<div align="center">Hue Bridge
-			<input ng-Model="hueIP" placeholder="{{hueIP()}}"></input>
-		</div>
+		<input align="center" ng-Model="hueIP" placeholder="{{hueIP()}}"></input>
 	</div>
 	<div class="container">
 		<div class="row">
@@ -62,7 +60,7 @@
 										<button ng-click="blinkLight(lightID)">Identify</button>
 										<button ng-click="toggleLight(lightID)">{{lights[lightID].state.on && 'Turn off' || 'Turn on'}}</button>
 										<input type="range" min="0" max="255" step="1" ng-model="lights[lightID].state.bri" ng-mouseup="sliderMove(lightID)" ng-change="nullPreset(groupID)"></input>
-										<input color-picker type="text" class="form-control" data-control="brightness" lights="lights" data-change="colorChange(lightID, groupID)" light-ID="{{lightID}}" group-ID="{{groupID}}"></input>
+										<input color-picker type="text" class="form-control" data-control="wheel" lights="lights" data-change="colorChange(lightID, groupID)" light-ID="{{lightID}}" group-ID="{{groupID}}"></input>
 									</div>
 								</div>
 							</div>

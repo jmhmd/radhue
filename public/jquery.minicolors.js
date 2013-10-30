@@ -19,7 +19,7 @@ if(jQuery) (function($) {
 			defaultValue: '',
 			hide: null,
 			hideSpeed: 100,
-			inline: false,
+			inline: true,
 			letterCase: 'lowercase',
 			opacity: false,
 			position: 'bottom left',
